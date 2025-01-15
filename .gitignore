@@ -1,3 +1,4 @@
 /vendor
 /.idea
+google-sheets-credentials.json
 .env
