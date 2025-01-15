@@ -1,53 +1,55 @@
 <?php
 
-/**
- * public/notify.php
- *
- * Endpoint to notify staff user(s) via Telegram when a visitor clicks a virtual "Help" button.
- */
-
-declare(strict_types=1);
-
-use App\Services\NotificationService;
-use Dotenv\Dotenv;
-
 require __DIR__ . '/../bootstrap.php';
 require __DIR__ . '/../vendor/autoload.php';
 
-// 1. Load environment variables
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
-$dotenv->safeLoad();
-
-// 2. Check if this is a POST request (simple security check)
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('HTTP/1.1 405 Method Not Allowed');
-    echo "Invalid request method.";
-    exit;
-}
-
-// 3. Instantiate the NotificationService
-$botToken = $_ENV['TELEGRAM_BOT_TOKEN'] ?? '';
-$botUsername = $_ENV['TELEGRAM_BOT_USERNAME'] ?? '';
-$staffChatId = $_ENV['STAFF_USER_TELEGRAM_ID'] ?? '';
+use App\Services\GoogleSheetService;
+use App\Services\NotificationService;
+use Longman\TelegramBot\Exception\TelegramException;
 
 try {
-    $notificationService = new NotificationService($botToken, $botUsername);
-} catch (\Longman\TelegramBot\Exception\TelegramException $e) {
-    throw new RuntimeException($e->getMessage());
+    $notificationService = new NotificationService($_ENV['TELEGRAM_BOT_TOKEN'], $_ENV['TELEGRAM_BOT_USERNAME']);
+} catch (TelegramException $e) {
+    throw new RuntimeException('TelegramException: ' . $e->getMessage());
 }
 
-// 4. Prepare the message
-$message = "Someone is at the conference booth requesting assistance!";
+$credentialsPath = $_ENV['GOOGLE_SERVICE_ACCOUNT_JSON'];
+$spreadsheetId   = $_ENV['SPREADSHEET_ID'];
+$sheetService = new GoogleSheetService($credentialsPath, $spreadsheetId);
 
-// 5. Send notification
+$staffChatId = $_ENV['STAFF_CHAT_TELEGRAM_ID'];
+
+$fullname = $_POST['fullname'] ?? '(unknown)';
+$username = $_POST['username'] ?? '(unknown)';
+$chatId   = $_POST['chatId'] ?? '(unknown)';
+
+// Get location from Google Sheets
+$locationRowIndex = $sheetService->getRowIndexByChatId($chatId, 'Locations!A2');
+$locationRowValues = $sheetService->getRowValuesByIndex($locationRowIndex + 1, 'Locations');
+
+// Properly convert longitude and latitude to floats
+$latitude = floatval(str_replace(',', '.', trim($locationRowValues[1])));
+$longitude = floatval(str_replace(',', '.', trim($locationRowValues[2])));
+
+
+// Notify staff with location
 try {
-    $success = $notificationService->notifyUser($staffChatId, $message);
-} catch (\Longman\TelegramBot\Exception\TelegramException $e) {
-    throw new RuntimeException($e->getMessage());
+    // Send location pin as floats
+    $successLocation = $notificationService->sendLocation($staffChatId, $latitude, $longitude);
+
+    if (!$successLocation) {
+        throw new RuntimeException('Failed to send location.');
+    }
+
+    // Send additional message
+    $msg = "$fullname wants to have a talk with us\n"
+        . "His TG: @$username\n"
+        . "Location values: Longitude: $longitude, Latitude: $latitude\n";
+
+    $successMessage = $notificationService->notifyUser($staffChatId, $msg);
+
+} catch (TelegramException $e) {
+    throw new RuntimeException('TelegramException: ' . $e->getMessage());
 }
 
-if ($success) {
-    echo "Notification sent successfully.";
-} else {
-    echo "Failed to send notification.";
-}
+echo ($successLocation && $successMessage) ? "Staff notified" : "Failed to notify staff";

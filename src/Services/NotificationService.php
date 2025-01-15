@@ -31,12 +31,12 @@ class NotificationService
     /**
      * Send a message to a specific chat ID.
      *
-     * @param string|int $chatId The user or group chat ID
+     * @param int|string $chatId The user or group chat ID
      * @param string $message The message to send
      * @return bool
      * @throws TelegramException
      */
-    public function notifyUser($chatId, string $message): bool
+    public function notifyUser(int|string $chatId, string $message): bool
     {
         $data = [
             'chat_id' => $chatId,
@@ -45,6 +45,25 @@ class NotificationService
 
         $result = Request::sendMessage($data);
 
+        if (! $result->isOk()) {
+            throw new \RuntimeException('SendMessage error code: ' . $result->getErrorCode() . ' SendMessage description: ' . $result->getDescription());
+        }
         return $result->isOk();
+    }
+    public function sendLocation(int $chatId, float $latitude, float $longitude): bool
+    {
+        try {
+            $data = [
+                'chat_id' => $chatId,
+                'latitude' => $latitude,
+                'longitude' => $longitude,
+            ];
+
+            $response = Request::sendLocation($data);
+
+            return $response->isOk();
+        } catch (TelegramException $e) {
+            throw new TelegramException('Failed to send location: ' . $e->getMessage());
+        }
     }
 }

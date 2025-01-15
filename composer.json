@@ -6,7 +6,8 @@
     "php": "^8.0",
     "longman/telegram-bot": "^0.83.1",
     "google/apiclient": "^2.12",
-    "vlucas/phpdotenv": "^5.5"
+    "vlucas/phpdotenv": "^5.5",
+    "ext-curl": "*"
   },
   "autoload": {
     "psr-4": {

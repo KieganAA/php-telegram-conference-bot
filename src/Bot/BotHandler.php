@@ -34,23 +34,6 @@ class BotHandler
             // Register command paths
             $this->telegram->addCommandsPath(__DIR__ . '/Commands');
 
-            $mysql_credentials = [
-                'host'     => $_ENV['DB_HOST'] ?? '127.0.0.1',
-                'user'     => $_ENV['DB_USER'] ?? 'root',
-                'password' => $_ENV['DB_PASS'] ?? '',
-                'database' => $_ENV['DB_NAME'] ?? 'telegram_bot_db',
-                'port'     => (int)($_ENV['DB_PORT'] ?? 3306),
-            ];
-
-            try {
-                $this->telegram->enableMySql($mysql_credentials);
-            } catch (\Longman\TelegramBot\Exception\TelegramException $e) {
-                throw new RuntimeException($e->getMessage());
-            }
-
-            // If you have custom callback handlers or specialized logic,
-            // you could load them here or handle them in your commands.
-
         } catch (TelegramException $e) {
             error_log("TelegramException in BotHandler::__construct: " . $e->getMessage());
             throw new RuntimeException($e->getMessage());

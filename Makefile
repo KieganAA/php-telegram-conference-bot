@@ -8,5 +8,5 @@ tunnel:
 
 webhook:
 	@echo "Setting Telegram webhook..."
-	curl -F "url=https://9537-95-169-205-160.ngrok-free.app/index.php" \
+	curl -F "url=https://c327-95-169-205-160.ngrok-free.app/index.php" \
         https://api.telegram.org/bot7617129159:AAHTAYx2cQv_Gly5X0pY-Z0_WbmBAW1yBmY/setWebhook
