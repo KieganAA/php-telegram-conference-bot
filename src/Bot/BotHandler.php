@@ -49,7 +49,6 @@ class BotHandler
             $this->telegram->handle();
         } catch (TelegramException $e) {
             error_log("TelegramException in BotHandler::handle: " . $e->getMessage());
-            throw new RuntimeException($e->getMessage());
         }
     }
 }

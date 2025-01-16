@@ -6,12 +6,13 @@ require __DIR__ . '/../vendor/autoload.php';
 use App\Services\GoogleSheetService;
 
 // 1. Retrieve form data
-$fullname = $_POST['fullname'] ?? '';
+$message = $_POST['message'] ?? '';
 $email    = $_POST['email'] ?? '';
 $vertical = $_POST['vertical'] ?? '';
+$chatId = $_POST['chatId'] ?? '';
 
 // 2. Basic validation
-if (!$fullname || !$email || !$vertical) {
+if (!$message || !$email || !$vertical) {
     exit("Missing required fields. Please go back and fill out all data.");
 }
 
@@ -24,14 +25,10 @@ try {
 } catch (Exception $e) {
     throw new RuntimeException($e->getMessage());
 }
+$timestamp = date('Y-m-d H:i:s');
 
-$row = [
-    $fullname,
-    $email,
-    $vertical,
-    date('Y-m-d H:i:s'),
-];
-$success = $sheetService->appendRow($row, 'Registrations!A2');
+$row = [$chatId, '', '', '', $email, $vertical, $message, '','', '', $timestamp];
+$success = $sheetService->appendOrUpdateRow($row, 'Main');
 
 // 4. Respond to user
 if ($success) {

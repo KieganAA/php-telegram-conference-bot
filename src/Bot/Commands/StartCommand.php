@@ -35,33 +35,29 @@ class StartCommand extends UserCommand
             $credentialsPath = $_ENV['GOOGLE_SERVICE_ACCOUNT_JSON'];
             $spreadsheetId   = $_ENV['SPREADSHEET_ID'];
             $sheetService = new GoogleSheetService($credentialsPath, $spreadsheetId);
-            $sheetValues = $sheetService->getSpreadsheetValues('Registrations');
         } catch (Exception $e) {
             throw new RuntimeException($e->getMessage());
         }
 
-
         $message = $this->getMessage();
         $chatId  = $message->getChat()->getId();
-        $text = $message->getText(true);
 
         $username  = $message->getFrom()->getUsername();
-        $firstName  = $message->getFrom()->getFirstName();
-        $lastName  = $message->getFrom()->getLastName();
+        $fullname = $message->getFrom()->getFirstName() . ' ' . $message->getFrom()->getLastName();
+        $timestamp = date('Y-m-d H:i:s');
         $languageCode  = $message->getFrom()->getLanguageCode();
 
-
-
-
-        // TODO func to save to Sheet. Check uniques by chatId
+        $sheetService->appendOrUpdateRow([
+            $chatId, $fullname, $username, $languageCode, '','','','','','', $timestamp
+        ], 'Main');
 
         $baseUrl = $_ENV['BASE_URL'];
-        $webAppUrl = sprintf('%s/demo-register-form.html', $baseUrl);
+        $webAppUrl = sprintf('%s/demo-register-form.html?chatId=%s', $baseUrl, $chatId);
         $AioUrl = 'https://aio.tech';
 
         $keyboard = new InlineKeyboard([
-            ['text' => 'Demo Registration', 'web_app' => ['url' => $webAppUrl]],
-            ['text' => 'Wanna Talk?', 'callback_data' => 'call_aio_team'],
+            ['text' => 'Demo', 'web_app' => ['url' => $webAppUrl]],
+            ['text' => 'Wanna Talk?', 'callback_data' => 'want_to_talk'],
         ], [
             ['text' => 'Official Site', 'url' => $AioUrl],
         ]
@@ -71,11 +67,11 @@ class StartCommand extends UserCommand
         $text = "Welcome to Dubai!\n"
             . "Our booth is at:\n"
             . "xxx_yyy_somewhere\n\n"
-            . "Using this bot you can:\n"
+            . "blablablablablablablablabla:\n"
             . "Visit our official site\n"
-            . "Book a demo call with AIO team\n"
-            . "Get a hold of one of team members to have a talk :)\n\n"
-            . "If you need any at the booth, ask any member of AIO team.";
+            . "Book a Demo\n"
+            . "Talk with us\n\n"
+            . "blablablablablablablablabla";
 
         return Request::sendMessage([
             'chat_id'      => $chatId,

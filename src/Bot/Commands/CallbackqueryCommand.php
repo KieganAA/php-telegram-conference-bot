@@ -2,6 +2,8 @@
 
 namespace App\Bot\Commands\SystemCommands;
 
+use App\Services\GoogleSheetService;
+use Firebase\JWT\Key;
 use Longman\TelegramBot\Commands\SystemCommand;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\Keyboard;
@@ -32,7 +34,74 @@ class CallbackqueryCommand extends SystemCommand
         $messageId     = $callbackQuery->getMessage()->getMessageId();
         $userId        = $callbackQuery->getFrom()->getId();
 
-        if ($callbackData === 'call_aio_team') {
+
+        if ($callbackData === 'want_to_talk') {
+
+            $text = "Who would you like to talk to?\n"
+                . "Anyone will do\n"
+                . "Someone - tech\n"
+                . "Someone - business\n"
+                . "Someone - demo\n"
+                . "Someone - fun\n"
+                . "Someone - drink beer\n"
+                . "Someone - clown\n";
+
+            $keyboard = new InlineKeyboard(
+                [
+                    ['text' => 'Anyone', 'callback_data' => 'staff_member_0'],
+                ],
+                [
+                    ['text' => 'someone1', 'callback_data' => 'staff_member_1'],
+                    ['text' => 'someone2', 'callback_data' => 'staff_member_2'],
+                ],
+                [
+                    ['text' => 'someone3', 'callback_data' => 'staff_member_3'],
+                    ['text' => 'someone4', 'callback_data' => 'staff_member_4'],
+                ],
+                [
+                    ['text' => 'someone5', 'callback_data' => 'staff_member_5'],
+                    ['text' => 'someone6', 'callback_data' => 'staff_member_6'],
+                ]
+            )
+            ;
+            return Request::sendMessage([
+                'chat_id'      => $chatId,
+                'text'         => $text,
+                'reply_markup' => $keyboard,
+            ]);
+
+        }
+
+        $staffMembers = [
+            'staff_member_0' => 'Anyone',
+            'staff_member_1' => '@sometgtag1',
+            'staff_member_2' => '@sometgtag2',
+            'staff_member_3' => '@sometgtag3',
+            'staff_member_4' => '@sometgtag4',
+            'staff_member_5' => '@sometgtag5',
+            'staff_member_6' => '@sometgtag6',
+        ];
+
+        if (array_key_exists($callbackData, $staffMembers)) {
+            $staffMember = $staffMembers[$callbackData];
+
+            Request::answerCallbackQuery([
+                'callback_query_id' => $callbackQuery->getId(),
+                'show_alert'        => false,
+            ]);
+
+            Request::editMessageText([
+                'chat_id'      => $chatId,
+                'message_id'   => $callbackQuery->getMessage()->getMessageId(),
+                'text' => "You'll talk with $staffMember, we'll send a notification",
+            ]);
+
+            Request::editMessageReplyMarkup([
+                'chat_id'      => $chatId,
+                'message_id'   => $callbackQuery->getMessage()->getMessageId(),
+                'reply_markup' => null,
+            ]);
+
             $keyboard = new Keyboard(
                 [
                     ['text' => 'Yes', 'request_location' => true],
@@ -43,9 +112,19 @@ class CallbackqueryCommand extends SystemCommand
             $keyboard->setResizeKeyboard(true)
                 ->setOneTimeKeyboard(true);
 
+            $credentialsPath = $_ENV['GOOGLE_SERVICE_ACCOUNT_JSON'];
+            $spreadsheetId   = $_ENV['SPREADSHEET_ID'];
+            $sheetService = new GoogleSheetService($credentialsPath, $spreadsheetId);
+            $timestamp = date('Y-m-d H:i:s');
+
+            // Add the staff member's tag to the spreadsheet
+            $sheetService->appendOrUpdateRow([
+                $chatId, '', '', '', '','','', $staffMember, '','', $timestamp
+            ], 'Main');
+
             return Request::sendMessage([
                 'chat_id'      => $chatId,
-                'text'         => 'Would you like to share your location?',
+                'text'         => 'Would you like to share your location so that we could find you?',
                 'reply_markup' => $keyboard,
             ]);
         }
@@ -55,7 +134,7 @@ class CallbackqueryCommand extends SystemCommand
         }
 
         return Request::emptyResponse();
-    }
+        }
 
     /**
      * Make a POST request to notify.php to send a notification.
@@ -67,7 +146,6 @@ class CallbackqueryCommand extends SystemCommand
         $baseUrl = $_ENV['BASE_URL'];
         $url = sprintf('%s/notify.php', $baseUrl);
         $chatId    = $callbackQuery->getMessage()->getChat()->getId();
-
         $postData = [
             'fullname' => $callbackQuery->getFrom()->getFirstName() . ' ' . $callbackQuery->getFrom()->getLastName(),
             'username'    => $callbackQuery->getFrom()->getUsername(),

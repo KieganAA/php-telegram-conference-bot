@@ -2,72 +2,171 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Affiliate Demo Registration</title>
     <style>
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #ffeb3b;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f8;
             color: #333;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 2em;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
         }
         h1 {
-            color: #1a73e8;
+            color: #0078ff;
+            font-size: 1.8rem;
+            margin-bottom: 0.5em;
+            text-align: center;
+        }
+        p {
+            font-size: 1rem;
+            margin-bottom: 1.5em;
+            text-align: center;
+            color: #555;
         }
         form {
-            background-color: #fff;
-            border: 2px solid #1a73e8;
-            border-radius: 8px;
-            padding: 2em;
-            max-width: 400px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
             width: 100%;
+            max-width: 400px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 1em;
         }
         label {
-            display: block;
-            margin-bottom: 0.5em;
             font-weight: bold;
+            font-size: 0.9rem;
+            color: #333;
         }
-        input, select, textarea {
+        input {
             width: 100%;
-            padding: 0.5em;
-            margin-bottom: 1em;
+            padding: 12px;
             border: 1px solid #ccc;
-            border-radius: 4px;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
         }
         button {
-            background-color: #1a73e8;
+            background-color: #0078ff;
             color: #fff;
             border: none;
-            border-radius: 4px;
-            padding: 0.75em 1.5em;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 1rem;
             cursor: pointer;
             font-weight: bold;
+            transition: background-color 0.3s ease;
         }
         button:hover {
-            background-color: #1565c0;
+            background-color: #005bb5;
+        }
+        #thank-you {
+            display: none;
+            text-align: center;
+        }
+        #thank-you h2 {
+            color: #28a745;
+            font-size: 1.5rem;
+            margin-bottom: 1em;
+        }
+        #thank-you a {
+            display: inline-block;
+            margin: 10px 0;
+            padding: 10px 20px;
+            background-color: #0078ff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+        #thank-you a:hover {
+            background-color: #005bb5;
         }
     </style>
 </head>
 
 <body>
 <h1>Demo Registration</h1>
-<p>Please fill out the form to schedule your affiliate marketing demo.</p>
+<p id="heading">Fill out this form to schedule your affiliate marketing demo.</p>
 
-<form action="/submit-demo.php" method="POST">
-    <label for="fullname">Full Name</label>
-    <input type="text" id="fullname" name="fullname" required />
-
+<form id="demo-form">
     <label for="email">Email</label>
-    <input type="email" id="email" name="email" required />
+    <input type="email" id="email" name="email" required placeholder="Enter your email address" />
 
     <label for="vertical">Vertical</label>
-    <input type="text" id="vertical" name="vertical" placeholder="e.g. e-commerce, finance" required />
+    <input type="text" id="vertical" name="vertical" required placeholder="e.g. e-commerce, finance" />
+
+    <label for="message">Message</label>
+    <input type="text" id="message" name="message" placeholder="Any additional info" />
+
+    <!-- Hidden field to include chatId -->
+    <input type="hidden" id="chatId" name="chatId" />
 
     <button type="submit">Submit</button>
 </form>
 
+<div id="thank-you">
+    <h2>Thank you for registering!</h2>
+    <p>Stay connected with us:</p>
+    <a href="https://t.me/aio_presale" target="_blank">Contact @aio_presale on Telegram</a>
+    <a href="https://t.me/aio_software" target="_blank">Join our official news channel on Telegram</a>
+    <a href="https://aio.tech" target="_blank">Visit AIO Official Site</a>
+</div>
+
+<script>
+    // Function to get query parameter value by name
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+
+    // Get chatId from the URL query parameters
+    const chatId = getQueryParam('chatId');
+
+    // Populate the hidden input field with chatId
+    if (chatId) {
+        document.getElementById('chatId').value = chatId;
+    }
+
+    const form = document.getElementById('demo-form');
+    const heading = document.getElementById('heading');
+    const thankYouSection = document.getElementById('thank-you');
+
+    form.addEventListener('submit', async function (event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Collect form data
+        const formData = new FormData(form);
+
+        // Send the data to submit-demo.php via AJAX
+        try {
+            const response = await fetch('/submit-demo.php', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                // Hide the form and show the thank-you section
+                form.style.display = 'none';
+                heading.style.display = 'none';
+                thankYouSection.style.display = 'block';
+            } else {
+                alert('An error occurred while submitting the form. Please try again.');
+            }
+        } catch (error) {
+            console.error('Submission failed:', error);
+            alert('An error occurred while submitting the form. Please check your connection and try again.');
+        }
+    });
+</script>
 </body>
 </html>

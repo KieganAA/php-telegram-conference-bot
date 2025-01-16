@@ -25,6 +25,8 @@ class GenericmessageCommand extends SystemCommand
     public function execute(): ServerResponse
     {
         $message = $this->getMessage();
+        $fullname = $message->getFrom()->getFirstName() . ' ' . $message->getFrom()->getLastName();
+        $username = $message->getFrom()->getUsername();
         $chat_id = $message->getChat()->getId();
         $timestamp = date('Y-m-d H:i:s');
 
@@ -37,8 +39,8 @@ class GenericmessageCommand extends SystemCommand
             $longitude = $message->getLocation()->getLongitude();
 
             $sheetService->appendOrUpdateRow([
-                $chat_id, $latitude, $longitude, $timestamp
-            ], 'Locations!A2');
+                $chat_id, '', '', '', '','','','', $latitude, $longitude, $timestamp
+            ], 'Main');
 
             Request::sendMessage([
                 'chat_id' => $chat_id,
@@ -54,8 +56,8 @@ class GenericmessageCommand extends SystemCommand
 
         if ($message->getText(true) == 'No') {
             $sheetService->appendOrUpdateRow([
-                $chat_id, 'No Data', 'No Data', $timestamp
-            ], 'Locations!A2');
+                $chat_id, '', '', '', '','','','', 'No Location', 'No Location', $timestamp
+            ], 'Main');
 
             Request::sendMessage([
                 'chat_id' => $chat_id,

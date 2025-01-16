@@ -27,26 +27,19 @@ $chatId   = $_POST['chatId'] ?? '(unknown)';
 $locationRowIndex = $sheetService->getRowIndexByChatId($chatId, 'Locations!A2');
 $locationRowValues = $sheetService->getRowValuesByIndex($locationRowIndex + 1, 'Locations');
 
-// Properly convert longitude and latitude to floats
 $latitude = floatval(str_replace(',', '.', trim($locationRowValues[1])));
 $longitude = floatval(str_replace(',', '.', trim($locationRowValues[2])));
+$staffMember = $locationRowValues[6];
 
 
-// Notify staff with location
 try {
-    // Send location pin as floats
-    $successLocation = $notificationService->sendLocation($staffChatId, $latitude, $longitude);
-
-    if (!$successLocation) {
-        throw new RuntimeException('Failed to send location.');
+    if (is_float($latitude)) {
+        $successLocation = $notificationService->sendLocation($staffChatId, $latitude, $longitude);
     }
+    $message = "Client $fullname wants to have a talk with $staffMember\n"
+        . "Client TG: @$username\n";
 
-    // Send additional message
-    $msg = "$fullname wants to have a talk with us\n"
-        . "His TG: @$username\n"
-        . "Location values: Longitude: $longitude, Latitude: $latitude\n";
-
-    $successMessage = $notificationService->notifyUser($staffChatId, $msg);
+    $successMessage = $notificationService->notifyUser($staffChatId, $message);
 
 } catch (TelegramException $e) {
     throw new RuntimeException('TelegramException: ' . $e->getMessage());

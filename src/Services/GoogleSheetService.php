@@ -47,17 +47,24 @@ class GoogleSheetService
      *
      * @return bool True if successful, false otherwise
      */
-    public function appendOrUpdateRow(array $values, string $range): bool
+    public function appendOrUpdateRow(array $values, string $sheetName): bool
     {
         try {
-            $chatId = $values[0];
-            $rowIndex = $this->getRowIndexByChatId($chatId, $range);
+            $chatId = $values[0]; // The chatId is the unique identifier
+            $rowIndex = $this->getRowIndexByChatId($chatId, "{$sheetName}!A:Z");
 
             if ($rowIndex !== null) {
-                $rowIndex++;
-                return $this->updateRow($values, "Locations!A{$rowIndex}");
+                $existingRow = $this->getRowValuesByIndex($rowIndex, $sheetName);
+
+                $updatedRow = [];
+                foreach ($values as $index => $value) {
+                    $updatedRow[$index] = $value !== '' ? $value : ($existingRow[$index] ?? '');
+                }
+
+                return $this->updateRow($updatedRow, "{$sheetName}!A{$rowIndex}");
             } else {
-                return $this->appendRow($values, $range);
+                // Append as a new row if chatId is not found
+                return $this->appendRow($values, "{$sheetName}!A2");
             }
         } catch (Exception $e) {
             throw new RuntimeException('Google Sheets Error: ' . $e->getMessage());
