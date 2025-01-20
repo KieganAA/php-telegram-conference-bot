@@ -207,10 +207,18 @@ class CallbackqueryCommand extends SystemCommand
 
 
         if ($callbackData === 'call_aio_team_location') {
+            Request::answerCallbackQuery([
+                'callback_query_id' => $callbackQuery->getId(),
+                'show_alert'        => false,
+            ]);
             return $this->handleCallAioTeam($callbackQuery);
         }
 
         if ($callbackData === 'aio_booth_info') {
+            Request::answerCallbackQuery([
+                'callback_query_id' => $callbackQuery->getId(),
+                'show_alert'        => false,
+            ]);
             $text = DatabaseService::getMessage('aio_booth_location');
             return Request::sendMessage([
                 'chat_id'      => $chatId,
@@ -220,6 +228,10 @@ class CallbackqueryCommand extends SystemCommand
         }
 
         if ($callbackData === 'aio_contacts') {
+            Request::answerCallbackQuery([
+                'callback_query_id' => $callbackQuery->getId(),
+                'show_alert'        => false,
+            ]);
             $text = DatabaseService::getMessage('business_contacts');
             return Request::sendMessage([
                 'chat_id'      => $chatId,
@@ -230,6 +242,10 @@ class CallbackqueryCommand extends SystemCommand
 
 
         if ($callbackData === 'additional_info') {
+            Request::answerCallbackQuery([
+                'callback_query_id' => $callbackQuery->getId(),
+                'show_alert'        => false,
+            ]);
             $baseUrl = $_ENV['BASE_URL'];
             $webAppUrl = sprintf('%s/demo-register-form.html?chatId=%s', $baseUrl, $chatId);
             $text = DatabaseService::getMessage('additional_info');
