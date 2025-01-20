@@ -262,16 +262,24 @@ $messages = DatabaseService::getAllMessages();
     <?php foreach ($messages as $msg): ?>
         <?php
         // Convert Markdown to HTML
-        $parsedHtml = $converter->convert($msg['text'])->__toString();
+        try {
+            $parsedHtml = $converter->convert($msg['text'])->__toString();
+        } catch (CommonMarkException $e) {
+            throw new RuntimeException($e->getMessage());
+        }
         ?>
         <tr>
             <form method="POST">
                 <td><?= htmlspecialchars($msg['id']) ?></td>
                 <td>
-                    <input type="text" name="identifier" value="<?= htmlspecialchars($msg['identifier']) ?>" required>
+                    <label>
+                        <input type="text" name="identifier" value="<?= htmlspecialchars($msg['identifier']) ?>" required>
+                    </label>
                 </td>
                 <td>
-                    <textarea name="text" rows="6" required><?= htmlspecialchars($msg['text']) ?></textarea>
+                    <label>
+                        <textarea name="text" rows="6" required><?= htmlspecialchars($msg['text']) ?></textarea>
+                    </label>
                 </td>
                 <td>
                     <input type="hidden" name="id" value="<?= htmlspecialchars($msg['id']) ?>">
