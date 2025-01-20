@@ -15,7 +15,7 @@ try {
 
 $staffChatId = $_ENV['STAFF_CHAT_TELEGRAM_ID'];
 
-$msg = "Someone pressed a button 'Call AIO Team'!\n"
+$msg = "Someone pressed the button 'Call AIO Team'!\n"
     . "Please head to the booth!";
 
 try {
