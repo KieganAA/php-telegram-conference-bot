@@ -36,6 +36,7 @@ class StartCommand extends UserCommand
         try {
             $sheetService = GoogleSheetService::getInstance();
         } catch (Exception $e) {
+            error_log('SheetServiceException: ' . $e->getMessage());
             throw new RuntimeException('SheetServiceException: ' . $e->getMessage());
         }
 

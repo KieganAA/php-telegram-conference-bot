@@ -81,6 +81,7 @@ class GoogleSheetService
                 return $this->appendRow($values, "{$sheetName}!A2");
             }
         } catch (Exception $e) {
+            error_log('Google Sheets Error: ' . $e->getMessage());
             throw new RuntimeException('Google Sheets Error: ' . $e->getMessage());
         }
     }
@@ -113,7 +114,7 @@ class GoogleSheetService
 
             return true;
         } catch (Exception $e) {
-            // Log or handle the error as needed
+            error_log('Google Sheets Error: ' . $e->getMessage());error_log('Google Sheets Error: ' . $e->getMessage());
             return false;
         }
     }
@@ -146,6 +147,7 @@ class GoogleSheetService
 
             return true;
         } catch (Exception $e) {
+            error_log('Google Sheets Error: ' . $e->getMessage());
             return false;
         }
     }
@@ -186,6 +188,7 @@ class GoogleSheetService
             $response = $this->service->spreadsheets_values->get($this->spreadsheetId, $range);
             return $response->getValues();
         } catch (Exception $e) {
+            error_log('Google Sheets Error: ' . $e->getMessage());
             return null;
         }
     }

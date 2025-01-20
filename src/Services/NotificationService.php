@@ -52,6 +52,10 @@ class NotificationService
         }
         return $result->isOk();
     }
+
+    /**
+     * @throws TelegramException
+     */
     public function sendLocation(int $chatId, float $latitude, float $longitude): bool
     {
         try {
@@ -65,6 +69,7 @@ class NotificationService
 
             return $response->isOk();
         } catch (TelegramException $e) {
+            error_log('TelegramException: ' . $e->getMessage());
             throw new TelegramException('Failed to send location: ' . $e->getMessage());
         }
     }
@@ -80,6 +85,7 @@ class NotificationService
         try {
             $sheetService = GoogleSheetService::getInstance();
         } catch (Exception $e) {
+            error_log('SheetServiceException: ' . $e->getMessage());
             throw new RuntimeException('SheetServiceException: ' . $e->getMessage());
         }
 
@@ -110,6 +116,7 @@ class NotificationService
 
             return ($successLocation || $successMessage) ? "AIO Team has been notified! We'll be right there" : "Failed to notify staff, please try again";
         } catch (TelegramException $e) {
+            error_log('TelegramException: ' . $e->getMessage());
             throw new RuntimeException('TelegramException: ' . $e->getMessage());
         }
     }
