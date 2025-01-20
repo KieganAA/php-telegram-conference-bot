@@ -51,27 +51,27 @@ class StartCommand extends UserCommand
             $chatId, $fullname, $username, $languageCode, '','','','','','', $timestamp
         ], 'Main');
 
-        $baseUrl = $_ENV['BASE_URL'];
-        $webAppUrl = sprintf('%s/demo-register-form.html?chatId=%s', $baseUrl, $chatId);
-        $AioUrl = 'https://aio.tech';
-
-        $keyboard = new InlineKeyboard([
-            ['text' => 'Demo', 'web_app' => ['url' => $webAppUrl]],
-            ['text' => 'Wanna Talk?', 'callback_data' => 'want_to_talk'],
-        ], [
-            ['text' => 'Official Site', 'url' => $AioUrl],
-        ]
+        $keyboard = new InlineKeyboard(
+            [
+                ['text' => 'Contact AIO Sales Manager', 'url' => 'https://t.me/aio_presale'],
+            ],
+            [
+                ['text' => 'Check AIO Official Website', 'url' => 'https://aio.tech'],
+            ],
+            [
+                ['text' => 'View Additional Info', 'callback_data' => 'additional_info'],
+            ],
         )
         ;
 
         $text = "Welcome to Dubai!\n"
-            . "Our booth is at:\n"
-            . "xxx_yyy_somewhere\n\n"
-            . "blablablablablablablablabla:\n"
-            . "Visit our official site\n"
-            . "Book a Demo\n"
-            . "Talk with us\n\n"
-            . "blablablablablablablablabla";
+            . "Below you can contact @aio_presale\n"
+            . "Or get additional information about us in Affiliate World Dubai:\n\n"
+            . "Find out which AIO employees are attending conference\n"
+            . "Where our booth is located\n"
+            . "Our official contacts\n"
+            . "Or leave your contacts for a Demo\n"
+        ;
 
         return Request::sendMessage([
             'chat_id'      => $chatId,

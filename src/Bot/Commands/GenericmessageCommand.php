@@ -25,9 +25,7 @@ class GenericmessageCommand extends SystemCommand
     public function execute(): ServerResponse
     {
         $message = $this->getMessage();
-        $fullname = $message->getFrom()->getFirstName() . ' ' . $message->getFrom()->getLastName();
-        $username = $message->getFrom()->getUsername();
-        $chat_id = $message->getChat()->getId();
+        $chatId = $message->getChat()->getId();
         $timestamp = date('Y-m-d H:i:s');
 
         $credentialsPath = $_ENV['GOOGLE_SERVICE_ACCOUNT_JSON'];
@@ -39,33 +37,33 @@ class GenericmessageCommand extends SystemCommand
             $longitude = $message->getLocation()->getLongitude();
 
             $sheetService->appendOrUpdateRow([
-                $chat_id, '', '', '', '','','','', $latitude, $longitude, $timestamp
+                $chatId, '', '', '', '','','','', $latitude, $longitude, $timestamp
             ], 'Main');
 
             Request::sendMessage([
-                'chat_id' => $chat_id,
+                'chat_id' => $chatId,
                 'text' => "Thank you!\n\nNotifying the team...",
                 'reply_markup' => Keyboard::remove(),
             ]);
 
             $telegram = $this->telegram;
-            Helpers::fakeCallback($chat_id, $message, $telegram, 'call_aio_team_location');
+            Helpers::fakeCallback($chatId, $message, $telegram, 'call_aio_team_location');
 
             return Request::emptyResponse();
         }
 
         if ($message->getText(true) == 'No') {
             $sheetService->appendOrUpdateRow([
-                $chat_id, '', '', '', '','','','', 'No Location', 'No Location', $timestamp
+                $chatId, '', '', '', '','','','', 'No Location', 'No Location', $timestamp
             ], 'Main');
 
             Request::sendMessage([
-                'chat_id' => $chat_id,
+                'chat_id' => $chatId,
                 'text' => "Thank you!\n\nNotifying the team...",
                 'reply_markup' => Keyboard::remove(),
             ]);
             $telegram = $this->telegram;
-            Helpers::fakeCallback($chat_id, $message, $telegram, 'call_aio_team_location');
+            Helpers::fakeCallback($chatId, $message, $telegram, 'call_aio_team_location');
             return Request::emptyResponse();
         }
         return Request::emptyResponse();

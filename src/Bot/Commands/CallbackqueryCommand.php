@@ -3,6 +3,7 @@
 namespace App\Bot\Commands\SystemCommands;
 
 use App\Services\GoogleSheetService;
+use Exception;
 use Firebase\JWT\Key;
 use Longman\TelegramBot\Commands\SystemCommand;
 use Longman\TelegramBot\Entities\InlineKeyboard;
@@ -25,6 +26,7 @@ class CallbackqueryCommand extends SystemCommand
 
     /**
      * @throws TelegramException
+     * @throws Exception
      */
     public function execute(): ServerResponse
     {
@@ -34,66 +36,98 @@ class CallbackqueryCommand extends SystemCommand
         $messageId     = $callbackQuery->getMessage()->getMessageId();
         $userId        = $callbackQuery->getFrom()->getId();
 
+        $staffMembers = [
+            [
+                'name' => 'Anyone',
+                'tag' => 'anyone_talk',
+                'role' => null,
+            ],
+            [
+                'name' => '@sometgtag1',
+                'tag' => 'staff_member_1',
+                'role' => '👨‍💻 tech',
+            ],
+            [
+                'name' => '@sometgtag2',
+                'tag' => 'staff_member_2',
+                'role' => '💼 business',
+            ],
+            [
+                'name' => '@sometgtag3',
+                'tag' => 'staff_member_3',
+                'role' => '📽️ demo',
+            ],
+            [
+                'name' => '@sometgtag4',
+                'tag' => 'staff_member_4',
+                'role' => '🎉 fun',
+            ],
+            [
+                'name' => '@sometgtag5',
+                'tag' => 'staff_member_5',
+                'role' => '🍺 drink beer',
+            ],
+            [
+                'name' => '@sometgtag6',
+                'tag' => 'staff_member_6',
+                'role' => '🤡 clown',
+            ],
+        ];
 
-        if ($callbackData === 'want_to_talk') {
 
-            $text = "Who would you like to talk to?\n"
-                . "Anyone will do\n"
-                . "Someone - tech\n"
-                . "Someone - business\n"
-                . "Someone - demo\n"
-                . "Someone - fun\n"
-                . "Someone - drink beer\n"
-                . "Someone - clown\n";
+        if ($callbackData === 'attending_people') {
+            $text = "Here's a short list of AIO employees who are currently in Dubai:\n\n"
+                . "If you want to talk to somebody - just press a button below, and this bot will notify them.\n"
+                . "If you don't want to talk - press the corresponding button, and the menu will disappear.\n\n";
 
-            $keyboard = new InlineKeyboard(
-                [
-                    ['text' => 'Anyone', 'callback_data' => 'staff_member_0'],
-                ],
-                [
-                    ['text' => 'someone1', 'callback_data' => 'staff_member_1'],
-                    ['text' => 'someone2', 'callback_data' => 'staff_member_2'],
-                ],
-                [
-                    ['text' => 'someone3', 'callback_data' => 'staff_member_3'],
-                    ['text' => 'someone4', 'callback_data' => 'staff_member_4'],
-                ],
-                [
-                    ['text' => 'someone5', 'callback_data' => 'staff_member_5'],
-                    ['text' => 'someone6', 'callback_data' => 'staff_member_6'],
-                ]
-            )
-            ;
+            foreach ($staffMembers as $member) {
+                if ($member['role']) {
+                    $text .= "*{$member['name']}* - {$member['role']}\n";
+                } else {
+                    $text .= "*{$member['name']}*\n";
+                }
+            }
+
+            $keyboardRows = [
+                [['text' => 'I don\'t want to talk', 'callback_data' => 'no_talk']],
+            ];
+
+            foreach ($staffMembers as $member) {
+                if ($member['tag'] === 'anyone_talk') {
+                    $keyboardRows[] = [['text' => $member['name'], 'callback_data' => $member['tag']]];
+                }
+            }
+
+            $currentRow = [];
+            foreach ($staffMembers as $member) {
+                if ($member['tag'] !== 'anyone_talk') {
+                    $currentRow[] = ['text' => $member['name'], 'callback_data' => $member['tag']];
+                }
+
+                if (count($currentRow) === 2) {
+                    $keyboardRows[] = $currentRow;
+                    $currentRow = [];
+                }
+            }
+
+            if (!empty($currentRow)) {
+                $keyboardRows[] = $currentRow;
+            }
+
+            $keyboard = new InlineKeyboard(...$keyboardRows);
+
             return Request::sendMessage([
                 'chat_id'      => $chatId,
                 'text'         => $text,
                 'reply_markup' => $keyboard,
+                'parse_mode' => 'Markdown',
             ]);
-
         }
 
-        $staffMembers = [
-            'staff_member_0' => 'Anyone',
-            'staff_member_1' => '@sometgtag1',
-            'staff_member_2' => '@sometgtag2',
-            'staff_member_3' => '@sometgtag3',
-            'staff_member_4' => '@sometgtag4',
-            'staff_member_5' => '@sometgtag5',
-            'staff_member_6' => '@sometgtag6',
-        ];
-
-        if (array_key_exists($callbackData, $staffMembers)) {
-            $staffMember = $staffMembers[$callbackData];
-
+        if ($callbackData === 'no_talk') {
             Request::answerCallbackQuery([
                 'callback_query_id' => $callbackQuery->getId(),
                 'show_alert'        => false,
-            ]);
-
-            Request::editMessageText([
-                'chat_id'      => $chatId,
-                'message_id'   => $callbackQuery->getMessage()->getMessageId(),
-                'text' => "You'll talk with $staffMember, we'll send a notification",
             ]);
 
             Request::editMessageReplyMarkup([
@@ -102,35 +136,138 @@ class CallbackqueryCommand extends SystemCommand
                 'reply_markup' => null,
             ]);
 
-            $keyboard = new Keyboard(
-                [
-                    ['text' => 'Yes', 'request_location' => true],
-                    ['text' => 'No'],
-                ]
-            );
-
-            $keyboard->setResizeKeyboard(true)
-                ->setOneTimeKeyboard(true);
-
-            $credentialsPath = $_ENV['GOOGLE_SERVICE_ACCOUNT_JSON'];
-            $spreadsheetId   = $_ENV['SPREADSHEET_ID'];
-            $sheetService = new GoogleSheetService($credentialsPath, $spreadsheetId);
-            $timestamp = date('Y-m-d H:i:s');
-
-            // Add the staff member's tag to the spreadsheet
-            $sheetService->appendOrUpdateRow([
-                $chatId, '', '', '', '','','', $staffMember, '','', $timestamp
-            ], 'Main');
-
-            return Request::sendMessage([
-                'chat_id'      => $chatId,
-                'text'         => 'Would you like to share your location so that we could find you?',
-                'reply_markup' => $keyboard,
-            ]);
+            return Request::emptyResponse();
         }
+
+        if ($callbackData === 'anyone_talk' || str_contains($callbackData, 'staff_member_')) {
+            $staffMember = null;
+            foreach ($staffMembers as $member) {
+                if ($member['tag'] === $callbackData) {
+                    $staffMember = $member;
+                    break;
+                }
+            }
+
+            if ($staffMember) {
+                Request::answerCallbackQuery([
+                    'callback_query_id' => $callbackQuery->getId(),
+                    'show_alert'        => false,
+                ]);
+
+                $responseText = $staffMember['tag'] === 'anyone_talk'
+                    ? "You'll talk with anyone available, we'll send a notification."
+                    : "You'll talk with {$staffMember['name']}, we'll send them a notification.";
+
+                Request::editMessageText([
+                    'chat_id'      => $chatId,
+                    'message_id'   => $callbackQuery->getMessage()->getMessageId(),
+                    'text'         => $responseText,
+                ]);
+
+                Request::editMessageReplyMarkup([
+                    'chat_id'      => $chatId,
+                    'message_id'   => $callbackQuery->getMessage()->getMessageId(),
+                    'reply_markup' => null,
+                ]);
+
+                $keyboard = new Keyboard(
+                    [
+                        ['text' => 'Yes', 'request_location' => true],
+                        ['text' => 'No'],
+                    ]
+                );
+
+                $keyboard->setResizeKeyboard(true)
+                    ->setOneTimeKeyboard(true);
+
+                $credentialsPath = $_ENV['GOOGLE_SERVICE_ACCOUNT_JSON'];
+                $spreadsheetId   = $_ENV['SPREADSHEET_ID'];
+                $sheetService = new GoogleSheetService($credentialsPath, $spreadsheetId);
+                $timestamp = date('Y-m-d H:i:s');
+
+                $staffMember['tag'] === 'anyone_talk'
+                    ? $sheetService->appendOrUpdateRow([
+                        $chatId, '', '', '', '', '', '', $staffMember['name'], '', '', $timestamp
+                    ], 'Main')
+                    : $sheetService->appendOrUpdateRow([
+                        $chatId, '', '', '', '', '', '', 'anyone available', '', '', $timestamp
+                    ], 'Main');
+
+                return Request::sendMessage([
+                    'chat_id'      => $chatId,
+                    'text'         => 'Would you like to share your location so that we could find you?',
+                    'reply_markup' => $keyboard,
+                ]);
+            }
+        }
+
 
         if ($callbackData === 'call_aio_team_location') {
             return $this->handleCallAioTeam($callbackQuery);
+        }
+
+        if ($callbackData === 'aio_booth_info') {
+            $text = "Sample message for AIO Booth location (idk)\n"
+            ;
+
+            return Request::sendMessage([
+                'chat_id'      => $chatId,
+                'text'         => $text,
+            ]);
+        }
+
+        if ($callbackData === 'aio_contacts') {
+            $text = "Below are our official Business Contacts:\n\n"
+                . "💬 [AIO Presale](https://t.me/YourSalesBot) - our official Sales Telegram\n"
+                . "🌐 [AIO Website](https://www.aio.tech) - our official website\n"
+                . "📢 [AIO Channel](https://t.me/AIOChannel) - our official news channel\n"
+                . "📧 AIO Email - our official Sales email address: sales@aio.tech\n";
+
+            return Request::sendMessage([
+                'chat_id'      => $chatId,
+                'text'         => $text,
+                'parse_mode' => 'Markdown',
+            ]);
+        }
+
+
+        if ($callbackData === 'additional_info') {
+            Request::answerCallbackQuery([
+                'callback_query_id' => $callbackQuery->getId(),
+                'show_alert'        => false,
+            ]);
+
+            $baseUrl = $_ENV['BASE_URL'];
+            $webAppUrl = sprintf('%s/demo-register-form.html?chatId=%s', $baseUrl, $chatId);
+
+            $text = "Below you can: \n"
+                . "Get our booth number and location\n"
+                . "Get information about attending AIO employees and ping them if you want to talk\n"
+                . "Book a Demo Call via Form\n"
+                . "Get our business contacts\n"
+                ;
+
+            $keyboard = new InlineKeyboard(
+                [
+                    ['text' => 'AIO Booth Info', 'callback_data' => 'aio_booth_info'],
+                ],
+                [
+                    ['text' => 'Attending People', 'callback_data' => 'attending_people'],
+                ],
+                [
+                    ['text' => 'Book a Demo Call', 'web_app' => ['url' => $webAppUrl]],
+                ],
+                [
+                    ['text' => 'Business Contacts', 'callback_data' => 'aio_contacts'],
+                ]
+            )
+            ;
+
+            return Request::sendMessage([
+                'chat_id'      => $chatId,
+                'text'         => $text,
+                'reply_markup' => $keyboard,
+            ]);
         }
 
         return Request::emptyResponse();
@@ -176,8 +313,8 @@ class CallbackqueryCommand extends SystemCommand
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         // timeouts:
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 15);  // wait max 5s for connection
-        curl_setopt($ch, CURLOPT_TIMEOUT, 25);        // max 10s total
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 15);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 25);
 
         $result = curl_exec($ch);
         curl_close($ch);
