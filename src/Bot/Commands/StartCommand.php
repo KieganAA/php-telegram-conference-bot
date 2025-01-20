@@ -70,7 +70,6 @@ class StartCommand extends UserCommand
             'chat_id'      => $chatId,
             'text'         => $text,
             'reply_markup' => $keyboard,
-            'parse_mode'   => 'HTML',
         ]);
     }
 }
