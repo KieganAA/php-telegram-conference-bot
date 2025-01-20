@@ -66,7 +66,7 @@ class GenericmessageCommand extends SystemCommand
 
             Request::sendMessage([
                 'chat_id' => $chatId,
-                'text' => $text,
+                'text' => $text . ' ' . json_encode($chatId),
                 'reply_markup' => Keyboard::remove(),
                 'parse_mode' => 'Markdown',
             ]);
