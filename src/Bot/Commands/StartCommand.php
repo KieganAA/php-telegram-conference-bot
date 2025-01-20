@@ -68,7 +68,7 @@ class StartCommand extends UserCommand
         $text = DatabaseService::getMessage('welcome_text');
         return Request::sendMessage([
             'chat_id'      => $chatId,
-            'text'         => $text,
+            'text'         => 'example',
             'reply_markup' => $keyboard,
         ]);
     }
