@@ -15,3 +15,6 @@ webhook:
 restart-server:
         sudo systemctl restart nginx
         sudo systemctl restart mysql
+
+logs:
+        sudo tail -f /var/log/nginx/error.log
