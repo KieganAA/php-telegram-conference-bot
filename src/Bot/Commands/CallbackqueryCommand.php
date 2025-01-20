@@ -77,6 +77,11 @@ class CallbackqueryCommand extends SystemCommand
 
 
         if ($callbackData === 'attending_employees') {
+            Request::answerCallbackQuery([
+                'callback_query_id' => $callbackQuery->getId(),
+                'show_alert'        => false,
+            ]);
+
             $text = DatabaseService::getMessage('attending_employees');
 
             foreach ($staffMembers as $member) {
