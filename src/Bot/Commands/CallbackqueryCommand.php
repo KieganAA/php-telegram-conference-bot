@@ -4,6 +4,7 @@ namespace App\Bot\Commands;
 
 use App\Services\DatabaseService;
 use App\Services\GoogleSheetService;
+use App\Services\NotificationService;
 use Exception;
 use Longman\TelegramBot\Commands\SystemCommand;
 use Longman\TelegramBot\Entities\InlineKeyboard;
@@ -39,7 +40,7 @@ class CallbackqueryCommand extends SystemCommand
 
         $staffMembers = [
             [
-                'name' => 'Anyone',
+                'name' => 'Anyone Available',
                 'tag' => 'anyone_talk',
                 'role' => null,
             ],
@@ -87,8 +88,6 @@ class CallbackqueryCommand extends SystemCommand
             foreach ($staffMembers as $member) {
                 if ($member['role']) {
                     $text .= "*{$member['name']}* - {$member['role']}\n";
-                } else {
-                    $text .= "*{$member['name']}*\n";
                 }
             }
 
@@ -283,50 +282,26 @@ class CallbackqueryCommand extends SystemCommand
         }
 
     /**
-     * Make a POST request to notify.php to send a notification.
+     * Notify the AIO Team when the callback is received.
+     *
      * @throws TelegramException
      */
     private function handleCallAioTeam(CallbackQuery $callbackQuery): ServerResponse
     {
+        $chatId = $callbackQuery->getMessage()->getChat()->getId();
+        $fullname = $callbackQuery->getFrom()->getFirstName() . ' ' . $callbackQuery->getFrom()->getLastName();
+        $username = $callbackQuery->getFrom()->getUsername();
 
-        $baseUrl = $_ENV['BASE_URL'];
-        $url = sprintf('%s/notify.php', $baseUrl);
-        $chatId    = $callbackQuery->getMessage()->getChat()->getId();
-        $postData = [
-            'fullname' => $callbackQuery->getFrom()->getFirstName() . ' ' . $callbackQuery->getFrom()->getLastName(),
-            'username'    => $callbackQuery->getFrom()->getUsername(),
-            'chatId'    => $chatId,
-        ];
-
-        $response = $this->curlPost($url, $postData);
+        try {
+            $result = NotificationService::notifyStaff($fullname, $username, $chatId);
+        } catch (Exception $e) {
+            $result = "Error: " . $e->getMessage();
+        }
 
         return Request::sendMessage([
             'chat_id' => $chatId,
-            'text'    => "AIO Team has been notified! We'll be right there.",
+            'text'    => $result,
             'reply_markup' => Keyboard::remove(),
         ]);
-    }
-
-    /**
-     * Reusable method to do a cURL POST.
-     *
-     * @param string $url
-     * @param array  $fields
-     * @return string The response body
-     */
-    private function curlPost(string $url, array $fields): string
-    {
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        // timeouts:
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 15);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 25);
-
-        $result = curl_exec($ch);
-        curl_close($ch);
-        return $result;
     }
 }
