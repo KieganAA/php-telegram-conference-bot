@@ -17,6 +17,19 @@ require __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->safeLoad(); // safeLoad won't throw exception if file is missing
 
-$botToken = $_ENV['TELEGRAM_BOT_TOKEN'] ?? '';
-$botHandler = new BotHandler($botToken);
-$botHandler->handle();
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && strpos($_SERVER['REQUEST_URI'], '/webhook') !== false) {
+    $botToken = $_ENV['TELEGRAM_BOT_TOKEN'] ?? '';
+    $botHandler = new BotHandler($botToken);
+
+    try {
+        $botHandler->handle();
+    } catch (Exception $e) {
+        error_log("[Webhook Error]: " . $e->getMessage());
+        http_response_code(500); // Internal Server Error
+        echo 'An error occurred while processing the webhook.';
+    }
+    exit;
+}
+
+http_response_code(404);
+echo 'Page not found.';

@@ -1,4 +1,5 @@
 /vendor
 /.idea
+/public/webhook-git.php
 google-sheets-credentials.json
 .env
