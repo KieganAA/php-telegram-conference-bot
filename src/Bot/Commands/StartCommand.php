@@ -2,7 +2,9 @@
 
 namespace App\Bot\Commands;
 
+use App\Services\DatabaseService;
 use App\Services\GoogleSheetService;
+use Dflydev\DotAccessData\Data;
 use Exception;
 use Longman\TelegramBot\Commands\UserCommand;
 use Longman\TelegramBot\Entities\InlineKeyboard;
@@ -32,11 +34,9 @@ class StartCommand extends UserCommand
     public function execute(): ServerResponse
     {
         try {
-            $credentialsPath = $_ENV['GOOGLE_SERVICE_ACCOUNT_JSON'];
-            $spreadsheetId   = $_ENV['SPREADSHEET_ID'];
-            $sheetService = new GoogleSheetService($credentialsPath, $spreadsheetId);
+            $sheetService = GoogleSheetService::getInstance();
         } catch (Exception $e) {
-            throw new RuntimeException($e->getMessage());
+            throw new RuntimeException('SheetServiceException: ' . $e->getMessage());
         }
 
         $message = $this->getMessage();
@@ -64,19 +64,12 @@ class StartCommand extends UserCommand
         )
         ;
 
-        $text = "Welcome to Dubai!\n"
-            . "Below you can contact @aio_presale\n"
-            . "Or get additional information about us in Affiliate World Dubai:\n\n"
-            . "Find out which AIO employees are attending conference\n"
-            . "Where our booth is located\n"
-            . "Our official contacts\n"
-            . "Or leave your contacts for a Demo\n"
-        ;
-
+        $text = DatabaseService::getMessage('welcome_text');
         return Request::sendMessage([
             'chat_id'      => $chatId,
             'text'         => $text,
             'reply_markup' => $keyboard,
+            'parse_mode'   => 'HTML',
         ]);
     }
 }

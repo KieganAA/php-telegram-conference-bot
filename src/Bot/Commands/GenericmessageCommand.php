@@ -2,6 +2,7 @@
 
 namespace App\Bot\Commands;
 
+use App\Services\DatabaseService;
 use Exception;
 use Longman\TelegramBot\Commands\SystemCommand;
 use Longman\TelegramBot\Entities\Keyboard;
@@ -11,6 +12,7 @@ use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 use App\Utils\Helpers;
 use App\Services\GoogleSheetService;
+use RuntimeException;
 
 class GenericmessageCommand extends SystemCommand
 {
@@ -28,9 +30,13 @@ class GenericmessageCommand extends SystemCommand
         $chatId = $message->getChat()->getId();
         $timestamp = date('Y-m-d H:i:s');
 
-        $credentialsPath = $_ENV['GOOGLE_SERVICE_ACCOUNT_JSON'];
-        $spreadsheetId   = $_ENV['SPREADSHEET_ID'];
-        $sheetService = new GoogleSheetService($credentialsPath, $spreadsheetId);
+        try {
+            $sheetService = GoogleSheetService::getInstance();
+        } catch (Exception $e) {
+            throw new RuntimeException('SheetServiceException: ' . $e->getMessage());
+        }
+
+        $text = DatabaseService::getMessage('thank_you_notification');
 
         if ($message->getLocation()) {
             $latitude = $message->getLocation()->getLatitude();
@@ -42,8 +48,9 @@ class GenericmessageCommand extends SystemCommand
 
             Request::sendMessage([
                 'chat_id' => $chatId,
-                'text' => "Thank you!\n\nNotifying the team...",
+                'text' => $text,
                 'reply_markup' => Keyboard::remove(),
+                'parse_mode' => 'Markdown',
             ]);
 
             $telegram = $this->telegram;
@@ -59,8 +66,9 @@ class GenericmessageCommand extends SystemCommand
 
             Request::sendMessage([
                 'chat_id' => $chatId,
-                'text' => "Thank you!\n\nNotifying the team...",
+                'text' => $text,
                 'reply_markup' => Keyboard::remove(),
+                'parse_mode' => 'Markdown',
             ]);
             $telegram = $this->telegram;
             Helpers::fakeCallback($chatId, $message, $telegram, 'call_aio_team_location');

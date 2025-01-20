@@ -13,9 +13,11 @@ try {
     throw new RuntimeException('TelegramException: ' . $e->getMessage());
 }
 
-$credentialsPath = $_ENV['GOOGLE_SERVICE_ACCOUNT_JSON'];
-$spreadsheetId   = $_ENV['SPREADSHEET_ID'];
-$sheetService = new GoogleSheetService($credentialsPath, $spreadsheetId);
+try {
+    $sheetService = GoogleSheetService::getInstance();
+} catch (Exception $e) {
+    throw new RuntimeException('SheetServiceException: ' . $e->getMessage());
+}
 
 $staffChatId = $_ENV['STAFF_CHAT_TELEGRAM_ID'];
 

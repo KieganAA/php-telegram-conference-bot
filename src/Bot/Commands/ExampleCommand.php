@@ -37,14 +37,10 @@ class ExampleCommand extends UserCommand
         $username  = $message->getFrom()->getUsername();
         $text    = trim($message->getText(true));
 
-        $credentialsPath = $_ENV['GOOGLE_SERVICE_ACCOUNT_JSON'];
-        $spreadsheetId   = $_ENV['SPREADSHEET_ID'];
-
         try {
-            $sheetService = new GoogleSheetService($credentialsPath, $spreadsheetId);
-            $sheetValues = $sheetService->getSpreadsheetValues('Registrations');
+            $sheetService = GoogleSheetService::getInstance();
         } catch (Exception $e) {
-            throw new RuntimeException($e->getMessage());
+            throw new RuntimeException('SheetServiceException: ' . $e->getMessage());
         }
 
         $row = [

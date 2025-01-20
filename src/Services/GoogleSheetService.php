@@ -10,18 +10,19 @@ use RuntimeException;
 
 class GoogleSheetService
 {
+    private static ?GoogleSheetService $instance = null;
     private Google_Service_Sheets $service;
     private string $spreadsheetId;
 
     /**
-     * Constructor.
+     * Private constructor to prevent direct instantiation.
      *
      * @param string $credentialsPath Path to the Google service account JSON file.
      * @param string $spreadsheetId   ID of the target Google Spreadsheet.
      *
      * @throws Exception
      */
-    public function __construct(string $credentialsPath, string $spreadsheetId)
+    private function __construct(string $credentialsPath, string $spreadsheetId)
     {
         if (!file_exists($credentialsPath)) {
             throw new Exception("Google Sheets credentials file not found: $credentialsPath");
@@ -29,7 +30,6 @@ class GoogleSheetService
 
         $this->spreadsheetId = $spreadsheetId;
 
-        // Create a new Google client
         $client = new Google_Client();
         $client->setApplicationName('Conference Demo Bot');
         $client->setScopes([Google_Service_Sheets::SPREADSHEETS]);
@@ -40,11 +40,25 @@ class GoogleSheetService
     }
 
     /**
+     * @throws Exception
+     */
+    public static function getInstance(): GoogleSheetService
+    {
+        $credentialsPath = $_ENV['GOOGLE_SERVICE_ACCOUNT_JSON'];
+        $spreadsheetId   = $_ENV['SPREADSHEET_ID'];
+
+        if (self::$instance === null) {
+            self::$instance = new self($credentialsPath, $spreadsheetId);
+        }
+
+        return self::$instance;
+    }
+
+    /**
      * Append a new row or update an existing row based on chatId.
      *
-     * @param array  $values One-dimensional array, e.g. ['123456789', 'John Doe', '2025-01-10 12:34:00']
-     * @param string $range  The sheet+range to search and update, e.g. 'Sheet1!A:Z'
-     *
+     * @param array $values One-dimensional array, e.g. ['123456789', 'John Doe', '2025-01-10 12:34:00']
+     * @param string $sheetName
      * @return bool True if successful, false otherwise
      */
     public function appendOrUpdateRow(array $values, string $sheetName): bool

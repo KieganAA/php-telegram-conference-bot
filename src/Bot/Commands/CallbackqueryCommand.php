@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Bot\Commands\SystemCommands;
+namespace App\Bot\Commands;
 
+use App\Services\DatabaseService;
 use App\Services\GoogleSheetService;
 use Exception;
-use Firebase\JWT\Key;
 use Longman\TelegramBot\Commands\SystemCommand;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Entities\Keyboard;
@@ -12,6 +12,7 @@ use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 use Longman\TelegramBot\Entities\CallbackQuery;
+use RuntimeException;
 
 /**
  * Class CallbackqueryCommand
@@ -75,10 +76,8 @@ class CallbackqueryCommand extends SystemCommand
         ];
 
 
-        if ($callbackData === 'attending_people') {
-            $text = "Here's a short list of AIO employees who are currently in Dubai:\n\n"
-                . "If you want to talk to somebody - just press a button below, and this bot will notify them.\n"
-                . "If you don't want to talk - press the corresponding button, and the menu will disappear.\n\n";
+        if ($callbackData === 'attending_employees') {
+            $text = DatabaseService::getMessage('attending_employees');
 
             foreach ($staffMembers as $member) {
                 if ($member['role']) {
@@ -180,9 +179,12 @@ class CallbackqueryCommand extends SystemCommand
                 $keyboard->setResizeKeyboard(true)
                     ->setOneTimeKeyboard(true);
 
-                $credentialsPath = $_ENV['GOOGLE_SERVICE_ACCOUNT_JSON'];
-                $spreadsheetId   = $_ENV['SPREADSHEET_ID'];
-                $sheetService = new GoogleSheetService($credentialsPath, $spreadsheetId);
+                try {
+                    $sheetService = GoogleSheetService::getInstance();
+                } catch (Exception $e) {
+                    throw new RuntimeException('SheetServiceException: ' . $e->getMessage());
+                }
+
                 $timestamp = date('Y-m-d H:i:s');
 
                 $staffMember['tag'] === 'anyone_talk'
@@ -193,10 +195,12 @@ class CallbackqueryCommand extends SystemCommand
                         $chatId, '', '', '', '', '', '', 'anyone available', '', '', $timestamp
                     ], 'Main');
 
+                $text = DatabaseService::getMessage('location_question');
                 return Request::sendMessage([
                     'chat_id'      => $chatId,
-                    'text'         => 'Would you like to share your location so that we could find you?',
+                    'text'         => $text,
                     'reply_markup' => $keyboard,
+                    'parse_mode' => 'Markdown',
                 ]);
             }
         }
@@ -207,22 +211,16 @@ class CallbackqueryCommand extends SystemCommand
         }
 
         if ($callbackData === 'aio_booth_info') {
-            $text = "Sample message for AIO Booth location (idk)\n"
-            ;
-
+            $text = DatabaseService::getMessage('aio_booth_location');
             return Request::sendMessage([
                 'chat_id'      => $chatId,
                 'text'         => $text,
+                'parse_mode' => 'Markdown',
             ]);
         }
 
         if ($callbackData === 'aio_contacts') {
-            $text = "Below are our official Business Contacts:\n\n"
-                . "💬 [AIO Presale](https://t.me/YourSalesBot) - our official Sales Telegram\n"
-                . "🌐 [AIO Website](https://www.aio.tech) - our official website\n"
-                . "📢 [AIO Channel](https://t.me/AIOChannel) - our official news channel\n"
-                . "📧 AIO Email - our official Sales email address: sales@aio.tech\n";
-
+            $text = DatabaseService::getMessage('business_contacts');
             return Request::sendMessage([
                 'chat_id'      => $chatId,
                 'text'         => $text,
@@ -232,27 +230,16 @@ class CallbackqueryCommand extends SystemCommand
 
 
         if ($callbackData === 'additional_info') {
-            Request::answerCallbackQuery([
-                'callback_query_id' => $callbackQuery->getId(),
-                'show_alert'        => false,
-            ]);
-
             $baseUrl = $_ENV['BASE_URL'];
             $webAppUrl = sprintf('%s/demo-register-form.html?chatId=%s', $baseUrl, $chatId);
-
-            $text = "Below you can: \n"
-                . "Get our booth number and location\n"
-                . "Get information about attending AIO employees and ping them if you want to talk\n"
-                . "Book a Demo Call via Form\n"
-                . "Get our business contacts\n"
-                ;
+            $text = DatabaseService::getMessage('additional_info');
 
             $keyboard = new InlineKeyboard(
                 [
                     ['text' => 'AIO Booth Info', 'callback_data' => 'aio_booth_info'],
                 ],
                 [
-                    ['text' => 'Attending People', 'callback_data' => 'attending_people'],
+                    ['text' => 'Attending Employees', 'callback_data' => 'attending_employees'],
                 ],
                 [
                     ['text' => 'Book a Demo Call', 'web_app' => ['url' => $webAppUrl]],
@@ -267,6 +254,7 @@ class CallbackqueryCommand extends SystemCommand
                 'chat_id'      => $chatId,
                 'text'         => $text,
                 'reply_markup' => $keyboard,
+                'parse_mode' => 'Markdown',
             ]);
         }
 
@@ -320,5 +308,4 @@ class CallbackqueryCommand extends SystemCommand
         curl_close($ch);
         return $result;
     }
-
 }

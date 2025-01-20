@@ -16,15 +16,12 @@ if (!$message || !$email || !$vertical) {
     exit("Missing required fields. Please go back and fill out all data.");
 }
 
-// 3. Store in Google Sheets
-$credentialsPath = $_ENV['GOOGLE_SERVICE_ACCOUNT_JSON'];
-$spreadsheetId   = $_ENV['SPREADSHEET_ID'];
-
 try {
-    $sheetService = new GoogleSheetService($credentialsPath, $spreadsheetId);
+    $sheetService = GoogleSheetService::getInstance();
 } catch (Exception $e) {
-    throw new RuntimeException($e->getMessage());
+    throw new RuntimeException('SheetServiceException: ' . $e->getMessage());
 }
+
 $timestamp = date('Y-m-d H:i:s');
 
 $row = [$chatId, '', '', '', $email, $vertical, $message, '','', '', $timestamp];
