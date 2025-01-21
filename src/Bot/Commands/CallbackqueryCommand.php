@@ -40,7 +40,7 @@ class CallbackqueryCommand extends SystemCommand
 
         $staffMembers = [
             [
-                'name' => 'anyone available',
+                'name' => 'Anyone Available',
                 'tag' => 'anyone_talk',
                 'role' => null,
             ],
