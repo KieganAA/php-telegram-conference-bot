@@ -40,7 +40,7 @@ class CallbackqueryCommand extends SystemCommand
 
         $staffMembers = [
             [
-                'name' => 'Anyone Available',
+                'name' => 'anyone available',
                 'tag' => 'anyone_talk',
                 'role' => null,
             ],
@@ -190,14 +190,9 @@ class CallbackqueryCommand extends SystemCommand
                 }
 
                 $timestamp = date('Y-m-d H:i:s');
-
-                $staffMember['tag'] === 'anyone_talk'
-                    ? $sheetService->appendOrUpdateRow([
-                        $chatId, '', '', '', '', '', '', $staffMember['name'], '', '', $timestamp
-                    ], 'Main')
-                    : $sheetService->appendOrUpdateRow([
-                        $chatId, '', '', '', '', '', '', 'anyone available', '', '', $timestamp
-                    ], 'Main');
+                $sheetService->appendOrUpdateRow([
+                    $chatId, '', '', '', '', '', '', $staffMember['name'], '', '', $timestamp
+                ], 'Main');
 
                 $text = DatabaseService::getMessage('location_question');
                 return Request::sendMessage([
