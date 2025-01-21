@@ -14,8 +14,8 @@ use Dotenv\Dotenv;
 require __DIR__ . '/../bootstrap.php';
 require __DIR__ . '/../vendor/autoload.php';
 
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
-$dotenv->safeLoad(); // safeLoad won't throw exception if file is missing
+//$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+//$dotenv->safeLoad(); // safeLoad won't throw exception if file is missing
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $botToken = $_ENV['TELEGRAM_BOT_TOKEN'] ?? '';
