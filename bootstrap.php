@@ -1,13 +1,13 @@
 <?php
 
 use App\Services\NotificationService;
-use Dotenv\Dotenv;
 
 // 1. Load Composer autoload if not already loaded:
 require __DIR__ . '/vendor/autoload.php';
 
 // 2. Load environment variables if not done globally:
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+use Dotenv\Dotenv;
+$dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->safeLoad();
 
 try {
