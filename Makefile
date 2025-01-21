@@ -37,6 +37,11 @@ logs:
 	@echo "Tailing Nginx error logs..."
 	sudo tail -f /var/log/nginx/error.log
 
+# Tail Nginx error logs
+access-logs:
+	@echo "Tailing Nginx error logs..."
+	sudo tail -f /var/log/nginx/access.log
+
 # Clear Nginx logs
 clear-logs:
 	@echo "Clearing Nginx logs..."
