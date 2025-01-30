@@ -42,11 +42,18 @@
 
         .bottom-image {
             position: absolute;
-            width: 586px;
-            height: 273px;
+            width: 586px;       /* Container width */
+            height: 273px;      /* Container height */
             top: 576px;
             left: -78px;
-            background-color: transparent;
+            overflow: hidden;   /* Ensures cropping */
+        }
+
+        .bottom-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;  /* Crop to fill container */
+            object-position: center; /* Adjust as needed (left/right) */
         }
 
         .form-container {
@@ -56,7 +63,7 @@
             top: 224px;
             left: 1px;
             background: #FFFFFF;
-            border-radius: 24px 24px 0 0;
+            border-radius: 24px 24px 24px 24px;
             overflow: hidden;
             padding: 24px;
         }
@@ -135,7 +142,9 @@
         </form>
     </div>
 
-    <img src="/images/book%201.png" alt="Decorative" class="bottom-image">
+    <div class="bottom-image">
+        <img src="/images/book%201.png" alt="Decorative">
+    </div>
 </div>
 </body>
 </html>
