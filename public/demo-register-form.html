@@ -1,172 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Affiliate Demo Registration</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Registration Form</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap" rel="stylesheet">
     <style>
-        body {
+        * {
             margin: 0;
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f8;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
+            padding: 0;
             box-sizing: border-box;
         }
-        h1 {
-            color: #0078ff;
-            font-size: 1.8rem;
-            margin-bottom: 0.5em;
+
+        body {
+            background: linear-gradient(225deg, #192297 0%, #4B57FF 100%);
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .container {
+            width: 393px;
+            height: 852px;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .bottom-image {
+            position: absolute;
+            width: 586px;
+            height: 273px;
+            top: 576px;
+            left: -78px;
+            /* Add background-image URL here */
+            background-color: transparent; /* Temporary placeholder */
+        }
+
+        .form-container {
+            position: absolute;
+            width: 392px;
+            height: 320px;
+            top: 224px;
+            left: 1px;
+            background: #FFFFFF;
+            border-radius: 24px 0 0 0;
+            padding: 24px;
+        }
+
+        .instruction-text {
+            position: absolute;
+            width: 345px;
+            top: 152px;
+            left: 24px;
+            color: #A4C3FF;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 24px;
+            letter-spacing: -0.04em;
             text-align: center;
         }
-        p {
-            font-size: 1rem;
-            margin-bottom: 1.5em;
-            text-align: center;
-            color: #555;
+
+        .logo {
+            position: absolute;
+            width: 59.29px;
+            height: 24px;
+            top: 64px;
+            left: 167px;
+            /* Add logo image URL here */
+            background-color: transparent; /* Temporary placeholder */
         }
-        form {
-            background-color: #ffffff;
-            border-radius: 12px;
-            padding: 20px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
-            gap: 1em;
-        }
-        label {
-            font-weight: bold;
-            font-size: 0.9rem;
-            color: #333;
-        }
-        input {
-            width: 100%;
+
+        .form-input {
+            width: 344px;
+            height: 52px;
+            margin-bottom: 16px;
             padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 1rem;
-            box-sizing: border-box;
+            border: 1px solid #E0E0E0;
+            border-radius: 4px;
+            background: #FFFFFF;
         }
-        button {
-            background-color: #0078ff;
-            color: #fff;
+
+        .submit-btn {
+            width: 344px;
+            height: 36px;
+            background: #22CD48;
             border: none;
-            border-radius: 8px;
-            padding: 12px;
-            font-size: 1rem;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
-        button:hover {
-            background-color: #005bb5;
-        }
-        #thank-you {
-            display: none;
-            text-align: center;
-        }
-        #thank-you h2 {
-            color: #28a745;
-            font-size: 1.5rem;
-            margin-bottom: 1em;
-        }
-        #thank-you a {
-            display: inline-block;
-            margin: 10px 0;
-            padding: 10px 20px;
-            background-color: #0078ff;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: background-color 0.3s ease;
-        }
-        #thank-you a:hover {
-            background-color: #005bb5;
+            border-radius: 8px 0 0 0;
+            color: white;
+            padding: 8px 12px;
+            opacity: 0.5;
+            cursor: not-allowed;
         }
     </style>
 </head>
-
 <body>
-<h1>Demo Registration</h1>
-<p id="heading">Fill out this form to schedule your affiliate marketing demo.</p>
+<div class="container">
+    <img src="logo-image.png" alt="Logo" class="logo">
+    <p class="instruction-text">Fill out this form to schedule your<br>affiliate marketing demo.</p>
 
-<form id="demo-form">
-    <label for="email">Email</label>
-    <input type="email" id="email" name="email" required placeholder="Enter your email address" />
+    <div class="form-container">
+        <form>
+            <input type="text" class="form-input" placeholder="Name">
+            <input type="email" class="form-input" placeholder="Email">
+            <input type="tel" class="form-input" placeholder="Phone">
+            <button type="submit" class="submit-btn" disabled>Submit</button>
+        </form>
+    </div>
 
-    <label for="vertical">Vertical</label>
-    <input type="text" id="vertical" name="vertical" required placeholder="e.g. e-commerce, finance" />
-
-    <label for="message">Message</label>
-    <input type="text" id="message" name="message" placeholder="Any additional info" />
-
-    <!-- Hidden field to include chatId -->
-    <input type="hidden" id="chatId" name="chatId" />
-
-    <button type="submit">Submit</button>
-</form>
-
-<div id="thank-you">
-    <h2>Thank you for registering!</h2>
-    <p>Stay connected with us:</p>
-    <a href="https://t.me/aio_presale" target="_blank">Contact @aio_presale on Telegram</a>
-    <a href="https://t.me/aio_software" target="_blank">Join our official news channel on Telegram</a>
-    <a href="https://aio.tech" target="_blank">Visit AIO Official Site</a>
+    <img src="bottom-image.png" alt="Decorative" class="bottom-image">
 </div>
-
-<script>
-    // Function to get query parameter value by name
-    function getQueryParam(param) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(param);
-    }
-
-    // Get chatId from the URL query parameters
-    const chatId = getQueryParam('chatId');
-
-    // Populate the hidden input field with chatId
-    if (chatId) {
-        document.getElementById('chatId').value = chatId;
-    }
-
-    const form = document.getElementById('demo-form');
-    const heading = document.getElementById('heading');
-    const thankYouSection = document.getElementById('thank-you');
-
-    form.addEventListener('submit', async function (event) {
-        event.preventDefault(); // Prevent the default form submission
-
-        // Collect form data
-        const formData = new FormData(form);
-
-        // Send the data to submit-demo.php via AJAX
-        try {
-            const response = await fetch('/submit-demo.php', {
-                method: 'POST',
-                body: formData,
-            });
-
-            if (response.ok) {
-                // Hide the form and show the thank-you section
-                form.style.display = 'none';
-                heading.style.display = 'none';
-                thankYouSection.style.display = 'block';
-            } else {
-                alert('An error occurred while submitting the form. Please try again.');
-            }
-        } catch (error) {
-            console.error('Submission failed:', error);
-            alert('An error occurred while submitting the form. Please check your connection and try again.');
-        }
-    });
-</script>
 </body>
 </html>
