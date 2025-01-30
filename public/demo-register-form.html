@@ -53,14 +53,16 @@
             width: 586px;      /* Original image width */
             height: 273px;     /* Original image height */
             top: 576px;        /* Position from Figma */
+            left: -78px;       /* Position from Figma */
             pointer-events: none; /* Makes image non-interactive */
         }
 
         /* Ensure image maintains original dimensions */
         .bottom-image img {
-             height: 100%;
-             display: block;
-             object-position: left center; /* Adjust cropping anchor */
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-position: left center; /* Adjust cropping anchor */
         }
 
 
