@@ -45,23 +45,24 @@
             height: 852px;
             position: relative;
             margin: 0 auto; /* Center horizontally in the browser */
-        }
-
-        .bottom-image-container {
-            position: absolute;
-            width: 393px;      /* Matches main container width */
-            height: 273px;
-            top: 576px;        /* From Figma */
-            left: 0;
-            overflow: hidden;  /* Crops anything outside container */
+            overflow: hidden; /* Crucial for cropping */
         }
 
         .bottom-image {
             position: absolute;
-            width: 586px;      /* Original image width from Figma */
-            height: 273px;
-            left: -78px;       /* Negative positioning from Figma */
-            object-fit: cover; /* Maintains aspect ratio while filling space */
+            width: 586px;      /* Original image width */
+            height: 273px;     /* Original image height */
+            top: 576px;        /* Position from Figma */
+            left: -78px;       /* Position from Figma */
+            pointer-events: none; /* Makes image non-interactive */
+        }
+
+        /* Ensure image maintains original dimensions */
+        .bottom-image img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-position: left center; /* Adjust cropping anchor */
         }
 
 
@@ -156,8 +157,8 @@
     </div>
 
     <!-- Bottom image area, with crop-like behavior -->
-    <div class="bottom-image-container">
-        <img src="/images/bottom_logo.png" alt="Decorative" class="bottom-image">
+    <div class="bottom-image">
+        <img src="/images/bottom_logo.png" alt="Background graphic">
     </div>
 </div>
 </body>
