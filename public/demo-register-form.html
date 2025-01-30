@@ -1,24 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Demo Registration Form</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap" rel="stylesheet">
-    <link href="https://db.onlinewebfonts.com/c/08e8247441bb4ead56bb4fe018f44636?family=Craftwork+Grotesk" rel="stylesheet">
+    <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap"
+            rel="stylesheet"
+    />
+    <link
+            href="https://db.onlinewebfonts.com/c/08e8247441bb4ead56bb4fe018f44636?family=Craftwork+Grotesk"
+            rel="stylesheet"
+    />
     <style>
-        @import url(https://db.onlinewebfonts.com/c/08e8247441bb4ead56bb4fe018f44636?family=Craftwork+Grotesk);
+        @import url("https://db.onlinewebfonts.com/c/08e8247441bb4ead56bb4fe018f44636?family=Craftwork+Grotesk");
         @font-face {
             font-family: "Craftwork Grotesk";
             src: url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.eot");
-            src: url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.eot?#iefix")format("embedded-opentype"),
-            url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.woff2")format("woff2"),
-            url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.woff")format("woff"),
-            url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.ttf")format("truetype"),
-            url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.svg#Craftwork Grotesk")format("svg");
+            src: url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.eot?#iefix") format("embedded-opentype"),
+            url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.woff2") format("woff2"),
+            url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.woff") format("woff"),
+            url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.ttf") format("truetype"),
+            url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.svg#Craftwork Grotesk") format("svg");
             font-weight: 600;
-
         }
+
         * {
             margin: 0;
             padding: 0;
@@ -34,21 +40,31 @@
         }
 
         .container {
+            /* Matches the Figma frame dimensions for the main content */
             width: 393px;
             height: 852px;
             position: relative;
-            margin: 0 auto;
+            margin: 0 auto; /* Center horizontally in the browser */
         }
 
+        /* Bottom image container (586x273), cropped at top=576, left=-78 */
         .bottom-image {
             position: absolute;
-            width: 392px;       /* Container width */
-            height: 320px;      /* Container height */
+            width: 586px;
+            height: 273px;
             top: 576px;
+            left: -78px;
+            overflow: hidden; /* Ensures the image is “cropped” if larger than 586x273 */
         }
 
         .bottom-image img {
-            object-position: center; /* Adjust as needed (left/right) */
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* “cover” behaves like Figma’s Crop:
+               - the image fills the box
+               - any excess is clipped
+            */
         }
 
         .form-container {
@@ -58,7 +74,7 @@
             top: 224px;
             left: 1px;
             background: #FFFFFF;
-            border-radius: 24px 24px 24px 24px;
+            border-radius: 24px;
             overflow: hidden;
             padding: 24px;
         }
@@ -126,19 +142,24 @@
 <div class="container">
     <img src="/images/aio_logo.png" alt="Logo" class="logo">
     <h1 class="header-text">Demo Registration</h1>
-    <p class="instruction-text">Fill out this form to schedule your<br>affiliate marketing demo.</p>
+    <p class="instruction-text">
+        Fill out this form to schedule your
+        <br />
+        affiliate marketing demo.
+    </p>
 
     <div class="form-container">
         <form>
-            <input type="text" class="form-input" placeholder="Name">
-            <input type="email" class="form-input" placeholder="Email">
-            <input type="tel" class="form-input" placeholder="Phone">
+            <input type="text" class="form-input" placeholder="Name" />
+            <input type="email" class="form-input" placeholder="Email" />
+            <input type="tel" class="form-input" placeholder="Phone" />
             <button type="submit" class="submit-btn" disabled>Submit</button>
         </form>
     </div>
 
+    <!-- Bottom image area, with crop-like behavior -->
     <div class="bottom-image">
-        <img src="/images/book%201.png" alt="Decorative">
+        <img src="/images/book%201.png" alt="Decorative" />
     </div>
 </div>
 </body>
