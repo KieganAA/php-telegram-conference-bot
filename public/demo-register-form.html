@@ -5,7 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Demo Registration Form</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap" rel="stylesheet">
+    <link href="https://db.onlinewebfonts.com/c/08e8247441bb4ead56bb4fe018f44636?family=Craftwork+Grotesk" rel="stylesheet">
     <style>
+        @import url(https://db.onlinewebfonts.com/c/08e8247441bb4ead56bb4fe018f44636?family=Craftwork+Grotesk);
+        @font-face {
+            font-family: "Craftwork Grotesk";
+            src: url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.eot");
+            src: url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.eot?#iefix")format("embedded-opentype"),
+            url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.woff2")format("woff2"),
+            url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.woff")format("woff"),
+            url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.ttf")format("truetype"),
+            url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.svg#Craftwork Grotesk")format("svg");
+            font-weight: 600;
+
+        }
         * {
             margin: 0;
             padding: 0;
@@ -92,11 +105,26 @@
             opacity: 0.5;
             cursor: not-allowed;
         }
+
+        .header-text {
+            position: absolute;
+            width: 345px;
+            height: 36px;
+            top: 112px;
+            left: 24px;
+            font-family: 'Craftwork Grotesk', sans-serif;
+            font-size: 28px;
+            font-weight: 600;
+            line-height: 36px;
+            text-align: center;
+            color: white;
+        }
     </style>
 </head>
 <body>
 <div class="container">
-    <img src="logo-image.png" alt="Logo" class="logo">
+    <img src="/images/aio_logo.png" alt="Logo" class="logo">
+    <h1 class="header-text">Demo Registration</h1>
     <p class="instruction-text">Fill out this form to schedule your<br>affiliate marketing demo.</p>
 
     <div class="form-container">
@@ -108,7 +136,7 @@
         </form>
     </div>
 
-    <img src="bottom-image.png" alt="Decorative" class="bottom-image">
+    <img src="/images/book%201.png" alt="Decorative" class="bottom-image">
 </div>
 </body>
 </html>
