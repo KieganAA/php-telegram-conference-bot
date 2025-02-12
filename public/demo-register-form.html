@@ -97,7 +97,7 @@
         }
 
         .form-group {
-            position: relative; /* So .error-text is positioned relative to each field */
+            position: relative; /* Each group is relative so error text can be absolutely positioned */
             margin-bottom: 16px;
         }
 
@@ -125,7 +125,7 @@
             font-size: 16px;
         }
 
-        /* Error text style */
+        /* Error text style, absolutely positioned at top-right inside .form-group */
         .error-text {
             font-family: 'Inter', sans-serif;
             font-weight: 400;
@@ -139,18 +139,16 @@
             border-radius: 4px;
 
             position: absolute;
-            top: 0;
-            right: 0;
-            /* Move the message just above this field */
-            transform: translate(0%, -105%);
+            top: 6px;     /* just inside the group area */
+            right: 8px;   /* small offset from right edge */
             display: none; /* Hidden by default */
+            z-index: 2;   /* ensure it appears above the input */
         }
 
         .error-text.show {
             display: inline;
         }
 
-        /* Submit button */
         .submit-btn {
             width: 100%;
             height: 48px;
@@ -231,7 +229,7 @@
         <!-- Optional Phone -->
         <div class="form-group">
             <label for="phone">
-                Phone <!-- no asterisk, so optional -->
+                Phone <span class="required-asterisk">*</span>
             </label>
             <input
                     type="tel"
@@ -259,7 +257,7 @@
         const inputs = form.querySelectorAll('.form-input');
         const submitBtn = form.querySelector('.submit-btn');
 
-        // We'll track only the required inputs to enable or disable submit
+        // Only required fields for button enable/disable
         const requiredInputs = Array.from(inputs).filter(i => i.hasAttribute('required'));
 
         // Simple email check
@@ -314,11 +312,11 @@
                 }
             }
 
-            // If we reach here, the field is valid
+            // If valid
             return true;
         }
 
-        // Check if required fields are non-empty -> enable/disable submit
+        // Update submit button based on required fields
         function updateSubmitButtonState() {
             let allFilled = true;
             requiredInputs.forEach(input => {
@@ -334,14 +332,14 @@
             input.addEventListener('input', updateSubmitButtonState);
         });
 
-        // Initial check for possibly autofilled fields
+        // Initial check for autofilled fields
         updateSubmitButtonState();
 
         // Final validation on submit
         form.addEventListener('submit', function(e) {
             e.preventDefault();
-
             let formIsValid = true;
+
             inputs.forEach(input => {
                 const valid = checkFieldValidity(input);
                 if (!valid) {
@@ -350,7 +348,8 @@
             });
 
             if (!formIsValid) {
-                return; // Stop submission, show error messages
+                // If invalid, show errors but do not submit
+                return;
             }
 
             alert('Form submitted successfully!');
