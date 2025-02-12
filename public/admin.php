@@ -10,18 +10,15 @@ use League\CommonMark\Exception\CommonMarkException;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\MarkdownConverter;
 
-// Ensure user is logged in
 if (!isset($_SESSION['admin_logged_in']) || !$_SESSION['admin_logged_in']) {
     header('Location: login.php');
     exit();
 }
 
-// Configure the Markdown converter
 $environment = new Environment([]);
 $environment->addExtension(new CommonMarkCoreExtension());
 $converter = new MarkdownConverter($environment);
 
-// Handle form submissions for create, update, or delete
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? null;
 
@@ -71,7 +68,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Fetch all messages
 $messages = DatabaseService::getAllMessages();
 ?>
 
@@ -205,7 +201,7 @@ $messages = DatabaseService::getAllMessages();
 
         document.addEventListener('click', function (event) {
             if (event.target.classList.contains('preview-button')) {
-                const htmlContent = event.target.getAttribute('data-content'); // Fetch the data-content attribute
+                const htmlContent = event.target.getAttribute('data-content');
                 showModal(htmlContent);
             }
         });
@@ -214,11 +210,10 @@ $messages = DatabaseService::getAllMessages();
             const modal = document.getElementById('markdownModal');
             const modalContent = document.getElementById('modalContent');
 
-            // Manually replace Markdown line breaks and paragraphs
-            let formattedContent = htmlContent.replace(/\n\n/g, '<p></p>'); // Convert paragraph breaks
-            formattedContent = formattedContent.replace(/\n/g, '<br>'); // Convert line breaks to <br>
+            let formattedContent = htmlContent.replace(/\n\n/g, '<p></p>');
+            formattedContent = formattedContent.replace(/\n/g, '<br>');
 
-            modalContent.querySelector('.telegram-bubble').innerHTML = formattedContent; // Render the formatted HTML content directly
+            modalContent.querySelector('.telegram-bubble').innerHTML = formattedContent;
             modal.style.display = 'block';
         }
 

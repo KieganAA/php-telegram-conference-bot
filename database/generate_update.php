@@ -5,11 +5,9 @@ if (!is_dir($updatesDir)) {
     mkdir($updatesDir, 0777, true);
 }
 
-// Generate a version name based on the current timestamp
 $version = date('Ymd_His') . '_update';
 $sqlFilePath = "{$updatesDir}/{$version}.sql";
 
-// Example SQL commands
 $sqlCommands = <<<SQL
 -- SQL Update: {$version}
 USE conference_bot_db;
@@ -32,7 +30,6 @@ INSERT INTO staff_members (name, tag, role) VALUES
 ('@sometgtag6', 'staff_member_6', '🤡 clown');
 SQL;
 
-// Write SQL to the file
 if (file_put_contents($sqlFilePath, $sqlCommands)) {
     echo "SQL update file created: {$sqlFilePath}\n";
 } else {

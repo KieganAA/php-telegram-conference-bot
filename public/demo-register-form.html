@@ -260,28 +260,23 @@
         const inputs = form.querySelectorAll('.form-input');
         const submitBtn = form.querySelector('.submit-btn');
 
-        // Only required fields for button enable/disable
         const requiredInputs = Array.from(inputs).filter(i => i.hasAttribute('required'));
 
-        // Simple email check
         function isValidEmail(email) {
             return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
         }
 
-        // Simple phone check
         function isValidPhone(phone) {
-            if (!phone) return true; // optional
+            if (!phone) return true;
             return /^[\d\s\-()]+$/.test(phone);
         }
 
-        // Toggle error visibility
         function showError(inputId, message, show) {
             const errorSpan = document.getElementById(inputId + '-error');
             if (!errorSpan) return;
             errorSpan.textContent = message;
             errorSpan.classList.toggle('show', show);
         }
-        // Update submit button based on required fields
         function updateSubmitButtonState() {
             let allFilled = true;
             requiredInputs.forEach(input => {
@@ -292,21 +287,14 @@
             submitBtn.disabled = !allFilled;
         }
 
-        // Listen for input changes on required fields
         requiredInputs.forEach(input => {
             input.addEventListener('input', updateSubmitButtonState);
         });
 
-        // Initial check for autofilled fields
         updateSubmitButtonState();
-
-        // Final validation on submit
-        // 1. Grab chatId from query string (?chatId=123, for example)
         const urlParams = new URLSearchParams(window.location.search);
-        // 2. Put that chatId into the hidden input
         document.getElementById('chatId').value = urlParams.get('chatId') || '';
 
-        // Basic function to check if required fields are non-empty
         function checkFieldValidity(input) {
             if (input.hasAttribute('required')) {
                 return input.value.trim() !== '';
@@ -314,9 +302,8 @@
         }
 
         form.addEventListener('submit', function(e) {
-            e.preventDefault(); // stop normal form submission
+            e.preventDefault();
 
-            // Validate each required field
             let formIsValid = true;
             inputs.forEach(input => {
                 if (!checkFieldValidity(input)) {
@@ -325,10 +312,8 @@
                 }
             });
 
-            if (!formIsValid) return; // stop if invalid
-
-            // 4. If valid, gather data and send via fetch
-            const formData = new FormData(form); // includes message, email, vertical, chatId
+            if (!formIsValid) return;
+            const formData = new FormData(form);
 
             fetch('submit-demo.php', {
                 method: 'POST',
@@ -338,10 +323,9 @@
                     if (!response.ok) {
                         throw new Error(`Network response was not ok: ${response.status}`);
                     }
-                    return response.text(); // or response.json() if your server returns JSON
+                    return response.text();
                 })
                 .then(result => {
-                    // 5. Show server response to user
                     alert(result);
                 })
                 .catch(error => {

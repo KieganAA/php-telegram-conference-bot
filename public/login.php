@@ -6,16 +6,13 @@ require_once __DIR__ . '/../bootstrap.php';
 
 use Dotenv\Dotenv;
 
-// Load environment variables
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->safeLoad();
 
-// Login logic
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
 
-    // Validate credentials
     if ($username === $_ENV['ADMIN_USERNAME'] && $password === $_ENV['ADMIN_PASSWORD']) {
         $_SESSION['admin_logged_in'] = true;
         header('Location: admin.php');
@@ -25,7 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Logout logic
 if (isset($_GET['logout'])) {
     session_destroy();
     header('Location: login.php');

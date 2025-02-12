@@ -91,11 +91,9 @@ class NotificationService
 
         $staffChatId = $_ENV['STAFF_CHAT_TELEGRAM_ID'];
 
-        // Get values from Sheets
         $locationRowIndex = $sheetService->getRowIndexByChatId($chatId, 'Main');
         $locationRowValues = $sheetService->getRowValuesByIndex($locationRowIndex, 'Main');
 
-        // Extract location details
         $rawLatitude = $locationRowValues[8] ?? 'No Location';
         $latitude = floatval(str_replace(',', '.', trim($locationRowValues[8] ?? '')));
         $longitude = floatval(str_replace(',', '.', trim($locationRowValues[9] ?? '')));

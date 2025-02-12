@@ -28,10 +28,7 @@ class BotHandler
         $botUsername = $_ENV['TELEGRAM_BOT_USERNAME'] ?? '';
 
         try {
-            // Initialize the Telegram object
             $this->telegram = new Telegram($botToken, $botUsername);
-
-            // Register command paths
             $this->telegram->addCommandsPath(__DIR__ . '/Commands');
 
         } catch (TelegramException $e) {

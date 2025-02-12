@@ -102,7 +102,7 @@ class GoogleSheetService
             ]);
 
             $params = [
-                'valueInputOption' => 'USER_ENTERED', // or 'RAW' if you want exact
+                'valueInputOption' => 'USER_ENTERED',
             ];
 
             $this->service->spreadsheets_values->append(

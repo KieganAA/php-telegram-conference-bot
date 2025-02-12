@@ -19,7 +19,6 @@ $db->exec("
 $files = scandir($updatesDir);
 $sqlFiles = array_filter($files, fn($file) => pathinfo($file, PATHINFO_EXTENSION) === 'sql');
 
-// Apply updates
 foreach ($sqlFiles as $file) {
     $version = pathinfo($file, PATHINFO_FILENAME);
 
