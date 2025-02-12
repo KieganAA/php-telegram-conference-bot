@@ -13,7 +13,7 @@
             rel="stylesheet"
     />
 
-    <!-- Craftwork Grotesk font (if licensed) - included from your previous requirement -->
+    <!-- Craftwork Grotesk font (if licensed) -->
     <link
             href="https://db.onlinewebfonts.com/c/08e8247441bb4ead56bb4fe018f44636?family=Craftwork+Grotesk"
             rel="stylesheet"
@@ -40,7 +40,8 @@
         }
 
         /* Hide horizontal scroll */
-        html, body {
+        html,
+        body {
             overflow-x: hidden;
         }
 
@@ -125,7 +126,7 @@
             font-size: 16px;
         }
 
-        /* Error text style from Figma specs */
+        /* Error text style */
         .error-text {
             font-family: 'Inter', sans-serif;
             font-weight: 400;
@@ -141,12 +142,10 @@
             position: absolute;
             top: 0;
             right: 0;
-            transform: translate(-1%, -270%);
-            /* Move just above the input box */
+            transform: translate(-1%, -270%); /* Adjust to position top-right corner */
             display: none; /* Hidden by default */
         }
 
-        /* Example of showing error text by toggling a .show class in JS */
         .error-text.show {
             display: inline;
         }
@@ -164,24 +163,18 @@
             transition: opacity 0.2s ease;
         }
 
-        .submit-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
         /* BOTTOM IMAGE SECTION */
         .bottom-image {
             width: 125%;
-            max-width: 586px; /* Original image width if you want it to scale down for larger screens */
-        /*margin: 0 auto 20px; */
-    }
+            max-width: 586px;
+        }
 
-    .bottom-image img {
-        display: block;
-        width: 100%;
-        height: auto;
-    }
-</style>
+        .bottom-image img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+    </style>
 </head>
 <body>
 <!-- HEADER -->
@@ -244,7 +237,7 @@
             <span class="error-text" id="phone-error">Phone is invalid</span>
         </div>
 
-        <button type="submit" class="submit-btn" disabled>Submit</button>
+        <button type="submit" class="submit-btn">Submit</button>
     </form>
 </div>
 
@@ -258,17 +251,17 @@
     (function () {
         const form = document.getElementById('demoForm');
         const inputs = form.querySelectorAll('.form-input');
-        const submitBtn = form.querySelector('.submit-btn');
 
-        // Simple email check (you can replace with a more robust regex if needed)
+        // Simple email check (replace with more robust regex if needed)
         function isValidEmail(email) {
             return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
         }
 
-        // Example phone check (very simplistic):
-        // allows digits, spaces, dashes, parentheses
+        // Example phone check (very simplistic)
         function isValidPhone(phone) {
-            if (!phone) return true; // allow blank since it's optional
+            // allow blank since it's optional
+            if (!phone) return true;
+            // allows digits, spaces, dashes, parentheses
             return /^[\d\s\-()]+$/.test(phone);
         }
 
@@ -276,26 +269,26 @@
         function showError(inputId, message, show) {
             const errorSpan = document.getElementById(inputId + '-error');
             if (!errorSpan) return;
-
             errorSpan.textContent = message;
             errorSpan.classList.toggle('show', show);
         }
 
-        // Check each field validity
+        // Validate each field. Returns true if valid, false otherwise
         function checkFieldValidity(input) {
             const { id, required, value } = input;
+            const trimmedVal = value.trim();
 
-            if (required && !value.trim()) {
-                // Required but empty
+            // Required but empty
+            if (required && !trimmedVal) {
                 showError(id, 'This field is required', true);
                 return false;
             } else {
                 showError(id, '', false);
             }
 
-            // Additional checks for specific types
-            if (id === 'email' && value.trim()) {
-                if (!isValidEmail(value.trim())) {
+            // Validate email
+            if (id === 'email' && trimmedVal) {
+                if (!isValidEmail(trimmedVal)) {
                     showError(id, 'Invalid email address', true);
                     return false;
                 } else {
@@ -303,8 +296,9 @@
                 }
             }
 
-            if (id === 'phone' && value.trim()) {
-                if (!isValidPhone(value.trim())) {
+            // Validate phone
+            if (id === 'phone' && trimmedVal) {
+                if (!isValidPhone(trimmedVal)) {
                     showError(id, 'Invalid phone format', true);
                     return false;
                 } else {
@@ -312,41 +306,27 @@
                 }
             }
 
-            // If we reach here, input is valid
+            // If we reach here, the field is valid
             return true;
         }
 
-        // Runs on every input event
-        function checkFormValidity() {
-            let allValid = true;
-            inputs.forEach(input => {
-                if (!checkFieldValidity(input)) {
-                    allValid = false;
-                }
-            });
-            submitBtn.disabled = !allValid;
-        }
-
-        // Attach event listeners
-        inputs.forEach(input => {
-            input.addEventListener('input', checkFormValidity);
-            // If you want to show errors on blur (losing focus):
-            // input.addEventListener('blur', () => checkFieldValidity(input));
-        });
-
-        // Final check on submit
-        form.addEventListener('submit', function(e) {
+        // Validate the entire form on submit
+        form.addEventListener('submit', function (e) {
             e.preventDefault();
-            checkFormValidity();
+            let formIsValid = true;
 
-            // If still invalid, do not proceed
-            if (!form.checkValidity) {
-                // For older browsers. If needed, do a final check again:
-                // if any field is invalid, exit
+            // Check each input
+            inputs.forEach((input) => {
+                const valid = checkFieldValidity(input);
+                if (!valid) formIsValid = false;
+            });
+
+            // If invalid, stop
+            if (!formIsValid) {
                 return;
             }
 
-            // If all valid, handle form submission, e.g. via AJAX or fetch
+            // Otherwise, handle submission
             alert('Form submitted successfully!');
         });
     })();
