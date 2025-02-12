@@ -203,10 +203,15 @@ class CallbackqueryCommand extends SystemCommand
                 'callback_query_id' => $callbackQuery->getId(),
                 'show_alert'        => false,
             ]);
-            $text = DatabaseService::getMessage('aio_booth_location');
+            //$text = DatabaseService::getMessage('aio_booth_location');
+
+            $text = "Our booth is C26. It's location you can find either on the image below or via checking the official [Affiliate World Dubai conference map] (https://affiliateworldconferences.com/dubai/exhibitors)";
+
             return Request::sendMessage([
                 'chat_id'      => $chatId,
-                'text'         => $text,
+                'photo'   => Request::encodeFile('/aio_booth_image.png'),
+                'caption' => $text,
+                //'text'         => $text,
                 'parse_mode' => 'Markdown',
             ]);
         }
