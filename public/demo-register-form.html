@@ -308,8 +308,9 @@
 
         // Basic function to check if required fields are non-empty
         function checkFieldValidity(input) {
-            // Could add more advanced checks (e.g. email format), but here's minimal:
-            return input.value.trim() !== '';
+            if (input.hasAttribute('required')) {
+                return input.value.trim() !== '';
+            } else return true;
         }
 
         form.addEventListener('submit', function(e) {
