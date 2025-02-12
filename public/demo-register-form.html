@@ -2,12 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="initial-scale=1.0, height=852px, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+    <!-- Ensures the page scales correctly on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Demo Registration Form</title>
+
+    <!-- Google Font (Inter) -->
     <link
             href="https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap"
             rel="stylesheet"
     />
+
+    <!-- Craftwork Grotesk font (if licensed) -->
     <link
             href="https://db.onlinewebfonts.com/c/08e8247441bb4ead56bb4fe018f44636?family=Craftwork+Grotesk"
             rel="stylesheet"
@@ -17,17 +23,16 @@
         @font-face {
             font-family: "Craftwork Grotesk";
             src: url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.eot");
-            src: url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.eot?#iefix") format("embedded-opentype"),
-            url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.woff2") format("woff2"),
-            url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.woff") format("woff"),
-            url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.ttf") format("truetype"),
-            url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.svg#Craftwork Grotesk") format("svg");
+            src:
+                    url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.eot?#iefix") format("embedded-opentype"),
+                    url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.woff2") format("woff2"),
+                    url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.woff") format("woff"),
+                    url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.ttf") format("truetype"),
+                    url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.svg#Craftwork Grotesk") format("svg");
             font-weight: 600;
         }
 
-        .container { border: 1px solid red; }
-        .bottom-image { border: 2px solid lime; }
-
+        /* RESET / BASE STYLES */
         * {
             margin: 0;
             padding: 0;
@@ -35,134 +40,188 @@
         }
 
         body {
-            height: 100%;
-            margin: 0;
+            min-height: 100vh;
             display: flex;
-            justify-content: center; /* Horizontally center content */
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
             background: linear-gradient(225deg, #192297 0%, #4B57FF 100%);
         }
 
-        .container {
-            /* Matches the Figma frame dimensions for the main content */
-            width: 393px;
-            height: 852px;
-            position: relative;
-            margin: 0 auto; /* Center horizontally in the browser */
-            overflow: visible; /* Change from hidden to visible */
+        /* HEADER SECTION */
+        .header-container {
+            text-align: center;
+            margin-top: 40px; /* Spacing from top */
         }
 
-        .bottom-image {
-            transform: translateZ(0);
-            position: relative;
-            width: 586px;      /* Original image width */
-            height: 273px;     /* Original image height */
-            top: 576px;        /* Position from Figma */
-            left: -78px;       /* Position from Figma */
-            pointer-events: none; /* Makes image non-interactive */
-        }
-
-        /* Ensure image maintains original dimensions */
-        .bottom-image img {
-            height: 100%;
+        .logo {
+            width: 60px;
+            height: auto;
+            margin: 0 auto 8px;
             display: block;
-           /* object-position: left center; /* Adjust cropping anchor */
         }
 
-
-        .form-container {
-            position: absolute;
-            width: 392px;
-            height: 320px;
-            top: 224px;
-            left: 1px;
-            background: #FFFFFF;
-            border-radius: 24px;
-            overflow: hidden;
-            padding: 24px;
+        .header-text {
+            font-family: 'Craftwork Grotesk', sans-serif;
+            font-size: 28px;
+            font-weight: 600;
+            line-height: 36px;
+            color: #fff;
+            margin-bottom: 8px;
         }
 
         .instruction-text {
-            position: absolute;
-            width: 345px;
-            top: 152px;
-            left: 24px;
             color: #A4C3FF;
             font-size: 16px;
             font-weight: 400;
             line-height: 24px;
             letter-spacing: -0.04em;
             text-align: center;
+            max-width: 340px;
+            margin: 0 auto 24px;
         }
 
-        .logo {
-            position: absolute;
-            width: 59.29px;
-            height: 24px;
-            top: 64px;
-            left: 167px;
-            background-color: transparent;
+        /* FORM SECTION */
+        .form-container {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 24px;
+            max-width: 380px;
+            width: 90%;
+            margin-bottom: 40px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #333;
         }
 
         .form-input {
-            width: 344px;
-            height: 52px;
+            width: 100%;
+            height: 50px;
             margin-bottom: 16px;
             padding: 12px;
             border: 1px solid #E0E0E0;
             border-radius: 4px;
             background: #FFFFFF;
+            font-size: 16px;
         }
 
         .submit-btn {
-            width: 344px;
-            height: 36px;
+            width: 100%;
+            height: 48px;
             background: #22CD48;
             border: none;
-            border-radius: 8px 0 0 0;
-            color: white;
-            padding: 8px 12px;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+
+        .submit-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
 
-        .header-text {
-            position: absolute;
-            width: 345px;
-            height: 36px;
-            top: 112px;
-            left: 24px;
-            font-family: 'Craftwork Grotesk', sans-serif;
-            font-size: 28px;
-            font-weight: 600;
-            line-height: 36px;
-            text-align: center;
-            color: white;
+        /* BOTTOM IMAGE SECTION */
+        .bottom-image {
+            width: 100%;
+            max-width: 586px; /* Original image width if you want it to scale down */
+            margin: 0 auto 20px; /* Add space at the bottom if desired */
+        }
+
+        .bottom-image img {
+            display: block;
+            width: 100%;
+            height: auto;
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <img src="/images/aio_logo.png" alt="Logo" class="logo">
+<!-- HEADER -->
+<div class="header-container">
+    <img src="/images/aio_logo.png" alt="Logo" class="logo" />
     <h1 class="header-text">Demo Registration</h1>
     <p class="instruction-text">
-        Fill out this form to schedule your
-        <br />
+        Fill out this form to schedule your <br />
         affiliate marketing demo.
     </p>
-
-    <div class="form-container">
-        <form>
-            <input type="text" class="form-input" placeholder="Name" />
-            <input type="email" class="form-input" placeholder="Email" />
-            <input type="tel" class="form-input" placeholder="Phone" />
-            <button type="submit" class="submit-btn" disabled>Submit</button>
-        </form>
-    </div>
-
-    <!-- Bottom image area, with crop-like behavior -->
-    <div class="bottom-image">
-        <img src="/images/bottom_logo.png" alt="Background graphic">
-    </div>
 </div>
+
+<!-- FORM -->
+<div class="form-container">
+    <form id="demoForm">
+        <label for="name">Name</label>
+        <input
+                type="text"
+                id="name"
+                name="name"
+                class="form-input"
+                placeholder="Your name"
+                required
+        />
+
+        <label for="email">Email</label>
+        <input
+                type="email"
+                id="email"
+                name="email"
+                class="form-input"
+                placeholder="Your email"
+                required
+        />
+
+        <label for="phone">Phone</label>
+        <input
+                type="tel"
+                id="phone"
+                name="phone"
+                class="form-input"
+                placeholder="Your phone"
+                required
+        />
+
+        <button type="submit" class="submit-btn" disabled>Submit</button>
+    </form>
+</div>
+
+<!-- BOTTOM IMAGE -->
+<div class="bottom-image">
+    <img src="/images/bottom_logo.png" alt="Background graphic" />
+</div>
+
+<!-- OPTIONAL: Enable Submit Button When All Fields Are Filled -->
+<script>
+    (function () {
+        const form = document.getElementById('demoForm');
+        const inputs = form.querySelectorAll('.form-input');
+        const submitBtn = form.querySelector('.submit-btn');
+
+        function checkFormValidity() {
+            let allValid = true;
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    allValid = false;
+                }
+            });
+            submitBtn.disabled = !allValid;
+        }
+
+        inputs.forEach(input => {
+            input.addEventListener('input', checkFormValidity);
+        });
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Handle form submission here, e.g., via AJAX or fetch
+            alert('Form submitted!');
+        });
+    })();
+</script>
 </body>
 </html>
