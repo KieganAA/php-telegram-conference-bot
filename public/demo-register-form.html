@@ -195,6 +195,8 @@
 <div class="form-container">
     <form id="demoForm" novalidate>
 
+        <input type="hidden" name="chatId" id="chatId" />
+
         <!-- Required Email -->
         <div class="form-group">
             <label for="email">
@@ -279,44 +281,6 @@
             errorSpan.textContent = message;
             errorSpan.classList.toggle('show', show);
         }
-
-        // Validate a single field
-        function checkFieldValidity(input) {
-            const { id, required, value } = input;
-            const trimmedVal = value.trim();
-
-            // If required but empty
-            if (required && !trimmedVal) {
-                showError(id, 'This field is required', true);
-                return false;
-            } else {
-                showError(id, '', false);
-            }
-
-            // Email check
-            if (id === 'email' && trimmedVal) {
-                if (!isValidEmail(trimmedVal)) {
-                    showError(id, 'Invalid email address', true);
-                    return false;
-                } else {
-                    showError(id, '', false);
-                }
-            }
-
-            // Phone check
-            if (id === 'phone' && trimmedVal) {
-                if (!isValidPhone(trimmedVal)) {
-                    showError(id, 'Phone is invalid', true);
-                    return false;
-                } else {
-                    showError(id, '', false);
-                }
-            }
-
-            // If valid
-            return true;
-        }
-
         // Update submit button based on required fields
         function updateSubmitButtonState() {
             let allFilled = true;
@@ -337,23 +301,51 @@
         updateSubmitButtonState();
 
         // Final validation on submit
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            let formIsValid = true;
+        // 1. Grab chatId from query string (?chatId=123, for example)
+        const urlParams = new URLSearchParams(window.location.search);
+        // 2. Put that chatId into the hidden input
+        document.getElementById('chatId').value = urlParams.get('chatId') || '';
 
+        // Basic function to check if required fields are non-empty
+        function checkFieldValidity(input) {
+            // Could add more advanced checks (e.g. email format), but here's minimal:
+            return input.value.trim() !== '';
+        }
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // stop normal form submission
+
+            // Validate each required field
+            let formIsValid = true;
             inputs.forEach(input => {
-                const valid = checkFieldValidity(input);
-                if (!valid) {
+                if (!checkFieldValidity(input)) {
                     formIsValid = false;
+                    alert(`${input.name} is required and cannot be blank.`);
                 }
             });
 
-            if (!formIsValid) {
-                // If invalid, show errors but do not submit
-                return;
-            }
+            if (!formIsValid) return; // stop if invalid
 
-            alert('Form submitted successfully!');
+            // 4. If valid, gather data and send via fetch
+            const formData = new FormData(form); // includes message, email, vertical, chatId
+
+            fetch('https://aio-conference-bot/submit-demo.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Network response was not ok: ${response.status}`);
+                    }
+                    return response.text(); // or response.json() if your server returns JSON
+                })
+                .then(result => {
+                    // 5. Show server response to user
+                    alert(result);
+                })
+                .catch(error => {
+                    alert('An error occurred: ' + error.message);
+                });
         });
     })();
 </script>
