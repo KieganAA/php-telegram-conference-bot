@@ -209,7 +209,7 @@ class CallbackqueryCommand extends SystemCommand
 
             return Request::sendPhoto([
                 'chat_id'    => $chatId,
-                'photo'      => Request::encodeFile(__DIR__ . '/var/www/bot/public/images/aio_booth_image.png'),
+                'photo'      => Request::encodeFile( '/var/www/bot/public/images/aio_booth_image.png'),
                 'caption'    => $text,
                 'parse_mode' => 'Markdown',
             ]);
