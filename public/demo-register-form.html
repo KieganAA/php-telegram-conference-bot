@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"/>
+    <meta charset="UTF-8" />
     <!-- Ensures the page scales correctly on mobile devices -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Demo Registration Form</title>
 
@@ -13,22 +13,22 @@
             rel="stylesheet"
     />
 
-    <!-- Craftwork Grotesk font (if licensed) - included from your previous requirement -->
+    <!-- Craftwork Grotesk font (if licensed) -->
     <link
             href="https://db.onlinewebfonts.com/c/08e8247441bb4ead56bb4fe018f44636?family=Craftwork+Grotesk"
             rel="stylesheet"
     />
     <style>
         @import url("https://db.onlinewebfonts.com/c/08e8247441bb4ead56bb4fe018f44636?family=Craftwork+Grotesk");
-
         @font-face {
             font-family: "Craftwork Grotesk";
             src: url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.eot");
-            src: url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.eot?#iefix") format("embedded-opentype"),
-            url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.woff2") format("woff2"),
-            url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.woff") format("woff"),
-            url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.ttf") format("truetype"),
-            url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.svg#Craftwork Grotesk") format("svg");
+            src:
+                    url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.eot?#iefix") format("embedded-opentype"),
+                    url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.woff2") format("woff2"),
+                    url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.woff") format("woff"),
+                    url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.ttf") format("truetype"),
+                    url("https://db.onlinewebfonts.com/t/08e8247441bb4ead56bb4fe018f44636.svg#Craftwork Grotesk") format("svg");
             font-weight: 600;
         }
 
@@ -40,7 +40,8 @@
         }
 
         /* Hide horizontal scroll */
-        html, body {
+        html,
+        body {
             overflow-x: hidden;
         }
 
@@ -97,67 +98,56 @@
         }
 
         /*
-   Root variables for demonstration.
-   In production, define these in :root or a global CSS file.
-*/
-        :root {
-            --Core-Core-surface: #F4F5FD;
-            --Negative-N-Surface-hard-N-Content: #FF6A2A;
-            --Core-Content-low: #6E6E84;
-        }
-
-        /*
-           Container for the Complicated Input (Large).
-           It includes both the label area (top) + the text input (bottom).
+          "Complicated Input Large" style from Figma:
+          - We keep each input + label text in a single container.
+          - By default, the border is gray (#E0E0E0) unless we add .error to override.
         */
         .complicated-input-large {
-            /* Figma dimensions */
-            width: 344px;
-            height: 52px;
-
-            /* Background and border for error state */
+            /* Figma width 344px x height 52px
+               We'll let it adapt to 100% of container with max 344px.
+               If you want strict 344, use a fixed width.
+            */
+            width: 100%;
+            max-width: 344px;
             background: var(--Core-Core-surface, #F4F5FD);
-            border: 1px solid var(--Negative-N-Surface-hard-N-Content, #FF6A2A);
+            border: 1px solid #E0E0E0; /* default border color */
             border-radius: 8px;
-
-            /* Spacing inside the container */
-            /* 8px top/bottom, 16px left/right per specs */
-            padding: 8px 16px;
             box-sizing: border-box;
 
-            /* For stacking label block and input vertically */
+            /* top & bottom = 8px, left & right = 16px, per Figma specs */
+            padding: 8px 16px;
+            margin-bottom: 16px;
+
+            /* To stack label row and actual input */
             display: flex;
             flex-direction: column;
-            gap: 8px; /* Figma gap: 8px */
+            gap: 8px;
+            position: relative;
         }
 
-        /* Top label container (Text Block) */
+        /* For error state, we can use a separate .error class if desired: */
+        .complicated-input-large.error {
+            border-color: var(--Negative-N-Surface-hard-N-Content, #FF6A2A);
+        }
+
+        /* The top text label area (Figma "Text Block" / "Frame 5") */
         .text-block {
-            /*
-               Figma shows width=312, height=36
-               Because after padding left/right (16px each) on the parent,
-               344 - 16 - 16 = 312
+            /* In Figma: width=312, height=36
+               (344 - 16 - 16 = 312), but it can adapt.
             */
-            width: 312px;
-            height: 36px;
-
-            /* If you need internal alignment:
-               display: flex;
-               align-items: center;
-               gap: 8px;
-            */
-        }
-
-        /* Inside that, "Frame 5" for the label + asterisk side by side */
-        .frame-5 {
-            width: 312px;
-            height: 36px;
             display: flex;
             align-items: center;
-            gap: 8px; /* Figma: gap=8px */
+            height: 36px; /* optional, can be auto */
         }
 
-        /* The label text (Name) */
+        /* Sub-container if needed (Figma "Frame 5") */
+        .frame-5 {
+            display: flex;
+            align-items: center;
+            gap: 8px; /* space between label and asterisk */
+        }
+
+        /* The label text ("Name", "Email", etc.) */
         .input-name {
             font-family: 'Inter', sans-serif;
             font-weight: 400;
@@ -177,66 +167,19 @@
             color: var(--Core-Content-low, #6E6E84);
         }
 
-        /* The actual input element */
-        .text-input {
-            /* The input shares the parent's 344×52
-               but effectively sits below the label area.
-               If you want it to fill the remainder automatically,
-               you might remove explicit height.
-            */
-            flex: 1; /* let it grow if you'd like */
-
-            /* Remove default borders so it blends with parent’s border */
-            border: none;
+        /* Actual input field
+           We also keep .form-input to support the existing JS that queries ".form-input"
+        */
+        .text-input.form-input {
+            border: none;       /* rely on outer container’s border */
+            background: none;   /* use parent's background */
             outline: none;
-            background: transparent;
-
-            /* Typography for user text inside the input */
+            height: 20px;       /* or auto */
             font-family: 'Inter', sans-serif;
             font-weight: 400;
             font-size: 14px;
             line-height: 20px;
-
-            /* If you want a specific text color, set it here */
             color: #000;
-        }
-
-        /*
-           Optional: If you want an .error class to show a distinct border or style,
-           you can target it specifically:
-        */
-        .complicated-input-large.error {
-            border: 1px solid var(--Negative-N-Surface-hard-N-Content, #FF6A2A);
-        }
-
-
-        .form-group {
-            position: relative; /* Needed so error message can be absolutely positioned */
-            margin-bottom: 16px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-            font-size: 14px;
-            color: #333;
-        }
-
-        /* Asterisk for required fields */
-        .required-asterisk {
-            color: red;
-            margin-left: 2px;
-        }
-
-        .form-input {
-            width: 100%;
-            height: 50px;
-            padding: 12px;
-            border: 1px solid #E0E0E0;
-            border-radius: 4px;
-            background: #FFFFFF;
-            font-size: 16px;
         }
 
         /* Error text style from Figma specs */
@@ -255,15 +198,16 @@
             position: absolute;
             top: 0;
             right: 0;
-            transform: translateY(-100%); /* Move just above the input box */
+            transform: translateY(-100%); /* Move just above the container */
             display: none; /* Hidden by default */
         }
 
-        /* Example of showing error text by toggling a .show class in JS */
+        /* Show the error text if toggled by JS */
         .error-text.show {
             display: inline-block;
         }
 
+        /* Submit button */
         .submit-btn {
             width: 100%;
             height: 48px;
@@ -284,8 +228,8 @@
 
         /* BOTTOM IMAGE SECTION */
         .bottom-image {
-            width: 125%;
-            max-width: 586px; /* Original image width if you want it to scale down for larger screens */
+            width: 125%; /* expand for visual effect if desired */
+            max-width: 586px;
             margin: 0 auto 20px;
         }
 
@@ -299,10 +243,10 @@
 <body>
 <!-- HEADER -->
 <div class="header-container">
-    <img src="/images/aio_logo.png" alt="Logo" class="logo"/>
+    <img src="/images/aio_logo.png" alt="Logo" class="logo" />
     <h1 class="header-text">Demo Registration</h1>
     <p class="instruction-text">
-        Fill out this form to schedule your <br/>
+        Fill out this form to schedule your <br />
         affiliate marketing demo.
     </p>
 </div>
@@ -310,18 +254,29 @@
 <!-- FORM -->
 <div class="form-container">
     <form id="demoForm" novalidate>
-        <!-- Name Field -->
-        <div class="complicated-input-large error">
+        <!-- NAME (required) -->
+        <div class="complicated-input-large">
+            <!-- Top label row -->
             <div class="text-block">
                 <div class="frame-5">
                     <span class="input-name">Name</span>
                     <span class="asterisk">*</span>
                 </div>
             </div>
-            <input type="text" class="text-input" placeholder="Type your name" required/>
+            <!-- Actual text input -->
+            <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    class="text-input form-input"
+                    placeholder="Your name"
+                    required
+            />
+            <!-- Error message above the container if invalid -->
+            <span class="error-text" id="name-error">Name is required</span>
         </div>
 
-        <!-- Email Field -->
+        <!-- EMAIL (required) -->
         <div class="complicated-input-large">
             <div class="text-block">
                 <div class="frame-5">
@@ -329,27 +284,53 @@
                     <span class="asterisk">*</span>
                 </div>
             </div>
-            <input type="email" class="text-input" placeholder="Type your email" required/>
+            <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    class="text-input form-input"
+                    placeholder="Your email"
+                    required
+            />
+            <span class="error-text" id="email-error">Invalid email address</span>
         </div>
 
-        <button type="submit" class="submit-btn" disabled>Submit</button>
+        <!-- PHONE (optional) -->
+        <div class="complicated-input-large">
+            <div class="text-block">
+                <div class="frame-5">
+                    <span class="input-name">Phone</span>
+                    <!-- No asterisk -->
+                </div>
+            </div>
+            <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    class="text-input form-input"
+                    placeholder="Your phone (optional)"
+            />
+            <span class="error-text" id="phone-error">Phone is invalid</span>
+        </div>
 
+        <!-- SUBMIT BUTTON -->
+        <button type="submit" class="submit-btn" disabled>Submit</button>
     </form>
 </div>
 
 <!-- BOTTOM IMAGE -->
 <div class="bottom-image">
-    <img src="/images/bottom_logo.png" alt="Background graphic"/>
+    <img src="/images/bottom_logo.png" alt="Background graphic" />
 </div>
 
 <!-- JS VALIDATION SCRIPT -->
 <script>
     (function () {
         const form = document.getElementById('demoForm');
-        const inputs = form.querySelectorAll('.complicated-input-large');
+        const inputs = form.querySelectorAll('.form-input');
         const submitBtn = form.querySelector('.submit-btn');
 
-        // Simple email check (you can replace with a more robust regex if needed)
+        // Simple email check (replace with a more robust one if needed)
         function isValidEmail(email) {
             return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
         }
@@ -365,14 +346,13 @@
         function showError(inputId, message, show) {
             const errorSpan = document.getElementById(inputId + '-error');
             if (!errorSpan) return;
-
             errorSpan.textContent = message;
             errorSpan.classList.toggle('show', show);
         }
 
-        // Check each field validity
+        // Validate each field
         function checkFieldValidity(input) {
-            const {id, required, value} = input;
+            const { id, required, value } = input;
 
             if (required && !value.trim()) {
                 // Required but empty
@@ -382,7 +362,7 @@
                 showError(id, '', false);
             }
 
-            // Additional checks for specific types
+            // Additional checks
             if (id === 'email' && value.trim()) {
                 if (!isValidEmail(value.trim())) {
                     showError(id, 'Invalid email address', true);
@@ -405,7 +385,7 @@
             return true;
         }
 
-        // Runs on every input event
+        // Check overall form validity on each input
         function checkFormValidity() {
             let allValid = true;
             inputs.forEach(input => {
@@ -416,10 +396,10 @@
             submitBtn.disabled = !allValid;
         }
 
-        // Attach event listeners
+        // Listen for input changes
         inputs.forEach(input => {
             input.addEventListener('input', checkFormValidity);
-            // If you want to show errors on blur (losing focus):
+            // If you want to validate on blur:
             // input.addEventListener('blur', () => checkFieldValidity(input));
         });
 
@@ -428,14 +408,13 @@
             e.preventDefault();
             checkFormValidity();
 
-            // If still invalid, do not proceed
+            // For older browsers or final check:
+            // if not valid, stop
             if (!form.checkValidity) {
-                // For older browsers. If needed, do a final check again:
-                // if any field is invalid, exit
                 return;
             }
 
-            // If all valid, handle form submission, e.g. via AJAX or fetch
+            // Otherwise, handle submission (AJAX/fetch or any logic)
             alert('Form submitted successfully!');
         });
     })();
