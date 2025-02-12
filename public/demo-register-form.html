@@ -97,7 +97,7 @@
         }
 
         .form-group {
-            position: relative; /* so the .error-text is positioned at top-right per field */
+            position: relative; /* So .error-text is positioned relative to each field */
             margin-bottom: 16px;
         }
 
@@ -141,7 +141,8 @@
             position: absolute;
             top: 0;
             right: 0;
-            transform: translate(-1%, -270%); /* Adjust for top-right corner of this .form-group */
+            /* Move the message just above this field */
+            transform: translate(0%, -105%);
             display: none; /* Hidden by default */
         }
 
@@ -258,9 +259,8 @@
         const inputs = form.querySelectorAll('.form-input');
         const submitBtn = form.querySelector('.submit-btn');
 
-        // Create a list of required inputs (Name + Email)
-        // to manage the Submit button's disabled state
-        const requiredInputs = form.querySelectorAll('.form-input[required]');
+        // We'll track only the required inputs to enable or disable submit
+        const requiredInputs = Array.from(inputs).filter(i => i.hasAttribute('required'));
 
         // Simple email check
         function isValidEmail(email) {
@@ -281,12 +281,12 @@
             errorSpan.classList.toggle('show', show);
         }
 
-        // Check one field's validity (used on submit)
+        // Validate a single field
         function checkFieldValidity(input) {
             const { id, required, value } = input;
             const trimmedVal = value.trim();
 
-            // Required but empty
+            // If required but empty
             if (required && !trimmedVal) {
                 showError(id, 'This field is required', true);
                 return false;
@@ -294,7 +294,7 @@
                 showError(id, '', false);
             }
 
-            // Additional checks
+            // Email check
             if (id === 'email' && trimmedVal) {
                 if (!isValidEmail(trimmedVal)) {
                     showError(id, 'Invalid email address', true);
@@ -304,57 +304,55 @@
                 }
             }
 
+            // Phone check
             if (id === 'phone' && trimmedVal) {
                 if (!isValidPhone(trimmedVal)) {
-                    showError(id, 'Invalid phone format', true);
+                    showError(id, 'Phone is invalid', true);
                     return false;
                 } else {
                     showError(id, '', false);
                 }
             }
 
-            // No errors => valid
+            // If we reach here, the field is valid
             return true;
         }
 
-        // Enable/disable submit button if required fields are filled
+        // Check if required fields are non-empty -> enable/disable submit
         function updateSubmitButtonState() {
-            let allRequiredFilled = true;
-            requiredInputs.forEach((input) => {
+            let allFilled = true;
+            requiredInputs.forEach(input => {
                 if (!input.value.trim()) {
-                    allRequiredFilled = false;
+                    allFilled = false;
                 }
             });
-            submitBtn.disabled = !allRequiredFilled;
+            submitBtn.disabled = !allFilled;
         }
 
-        // We only show errors on form submit,
-        // but we can track required fields on input to enable the submit button
-        requiredInputs.forEach((input) => {
+        // Listen for input changes on required fields
+        requiredInputs.forEach(input => {
             input.addEventListener('input', updateSubmitButtonState);
         });
 
-        // Initial check (in case fields are autofilled)
+        // Initial check for possibly autofilled fields
         updateSubmitButtonState();
 
         // Final validation on submit
-        form.addEventListener('submit', function (e) {
+        form.addEventListener('submit', function(e) {
             e.preventDefault();
 
             let formIsValid = true;
-            inputs.forEach((input) => {
+            inputs.forEach(input => {
                 const valid = checkFieldValidity(input);
                 if (!valid) {
                     formIsValid = false;
                 }
             });
 
-            // If invalid, stop here
             if (!formIsValid) {
-                return;
+                return; // Stop submission, show error messages
             }
 
-            // Otherwise, handle submission
             alert('Form submitted successfully!');
         });
     })();
