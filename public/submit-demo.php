@@ -12,7 +12,7 @@ $vertical = $_POST['vertical'] ?? '';
 $chatId = $_POST['chatId'] ?? '';
 
 // 2. Basic validation
-if (!$message || !$email || !$vertical) {
+if (!$email || !$vertical) {
     exit("Missing required fields. Please go back and fill out all data.");
 }
 
