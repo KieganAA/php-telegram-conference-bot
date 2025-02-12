@@ -29,7 +29,7 @@ $success = $sheetService->appendOrUpdateRow($row, 'Main');
 
 // 4. Respond to user
 if ($success) {
-    echo sprintf("Thanks! Your registration was recorded successfully. chatId = %s", $chatId);
+    echo "Thanks! Your registration was recorded successfully.";
 } else {
     echo "Oops! Something went wrong saving your data. Please try again later.";
 }
