@@ -52,17 +52,12 @@ class CallbackqueryCommand extends SystemCommand
             [
                 'name' => '@aio_support2',
                 'tag' => 'staff_member_2',
-                'role' => '👨‍💻 tech',
+                'role' => '👨‍💻 tech / 🍺 drink beer',
             ],
             [
                 'name' => '@aio_concierge',
                 'tag' => 'staff_member_3',
                 'role' => '📽️ business',
-            ],
-            [
-                'name' => '@kieganAA',
-                'tag' => 'staff_member_4',
-                'role' => '🍺 drink beer',
             ],
         ];
 
