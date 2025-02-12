@@ -45,34 +45,24 @@ class CallbackqueryCommand extends SystemCommand
                 'role' => null,
             ],
             [
-                'name' => '@sometgtag1',
+                'name' => '@aio_presale',
                 'tag' => 'staff_member_1',
+                'role' => '💼 business / demo',
+            ],
+            [
+                'name' => '@aio_support2',
+                'tag' => 'staff_member_2',
                 'role' => '👨‍💻 tech',
             ],
             [
-                'name' => '@sometgtag2',
-                'tag' => 'staff_member_2',
-                'role' => '💼 business',
-            ],
-            [
-                'name' => '@sometgtag3',
+                'name' => '@aio_concierge',
                 'tag' => 'staff_member_3',
-                'role' => '📽️ demo',
+                'role' => '📽️ business',
             ],
             [
-                'name' => '@sometgtag4',
-                'tag' => 'staff_member_4',
-                'role' => '🎉 fun',
-            ],
-            [
-                'name' => '@sometgtag5',
+                'name' => '@kieganAA',
                 'tag' => 'staff_member_5',
                 'role' => '🍺 drink beer',
-            ],
-            [
-                'name' => '@sometgtag6',
-                'tag' => 'staff_member_6',
-                'role' => '🤡 clown',
             ],
         ];
 
