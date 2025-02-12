@@ -13,7 +13,7 @@
             rel="stylesheet"
     />
 
-    <!-- Craftwork Grotesk font (if licensed) -->
+    <!-- Craftwork Grotesk font (if licensed) - included from your previous requirement -->
     <link
             href="https://db.onlinewebfonts.com/c/08e8247441bb4ead56bb4fe018f44636?family=Craftwork+Grotesk"
             rel="stylesheet"
@@ -32,15 +32,16 @@
             font-weight: 600;
         }
 
-        html, body {
-            overflow-x: hidden;
-        }
-
         /* RESET / BASE STYLES */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        /* Hide horizontal scroll */
+        html, body {
+            overflow-x: hidden;
         }
 
         body {
@@ -95,7 +96,12 @@
             margin-bottom: 40px;
         }
 
-        label {
+        .form-group {
+            position: relative; /* Needed so error message can be absolutely positioned */
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
             display: block;
             margin-bottom: 6px;
             font-weight: 600;
@@ -103,15 +109,45 @@
             color: #333;
         }
 
+        /* Asterisk for required fields */
+        .required-asterisk {
+            color: red;
+            margin-left: 2px;
+        }
+
         .form-input {
             width: 100%;
             height: 50px;
-            margin-bottom: 16px;
             padding: 12px;
             border: 1px solid #E0E0E0;
             border-radius: 4px;
             background: #FFFFFF;
             font-size: 16px;
+        }
+
+        /* Error text style from Figma specs */
+        .error-text {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: 12px;
+            line-height: 16px;
+            letter-spacing: -0.02em; /* ~ -2% */
+            text-align: right;
+            background: var(--Negative-N-Surface-hard-N-Content, #FF6A2A);
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+
+            position: absolute;
+            top: 0;
+            right: 0;
+            transform: translateY(-100%); /* Move just above the input box */
+            display: none; /* Hidden by default */
+        }
+
+        /* Example of showing error text by toggling a .show class in JS */
+        .error-text.show {
+            display: inline-block;
         }
 
         .submit-btn {
@@ -135,8 +171,8 @@
         /* BOTTOM IMAGE SECTION */
         .bottom-image {
             width: 125%;
-            max-width: 586px; /* Original image width if you want it to scale down */
-            /* margin: 0 auto 20px; /* Add space at the bottom if desired */
+            max-width: 586px; /* Original image width if you want it to scale down for larger screens */
+            margin: 0 auto 20px;
         }
 
         .bottom-image img {
@@ -159,36 +195,53 @@
 
 <!-- FORM -->
 <div class="form-container">
-    <form id="demoForm">
-        <label for="name">Name</label>
-        <input
-                type="text"
-                id="name"
-                name="name"
-                class="form-input"
-                placeholder="Your name"
-                required
-        />
+    <form id="demoForm" novalidate>
+        <!-- Required Name -->
+        <div class="form-group">
+            <label for="name">
+                Name<span class="required-asterisk">*</span>
+            </label>
+            <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    class="form-input"
+                    placeholder="Your name"
+                    required
+            />
+            <span class="error-text" id="name-error">Name is required</span>
+        </div>
 
-        <label for="email">Email</label>
-        <input
-                type="email"
-                id="email"
-                name="email"
-                class="form-input"
-                placeholder="Your email"
-                required
-        />
+        <!-- Required Email -->
+        <div class="form-group">
+            <label for="email">
+                Email<span class="required-asterisk">*</span>
+            </label>
+            <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    class="form-input"
+                    placeholder="Your email"
+                    required
+            />
+            <span class="error-text" id="email-error">Invalid email address</span>
+        </div>
 
-        <label for="phone">Phone</label>
-        <input
-                type="tel"
-                id="phone"
-                name="phone"
-                class="form-input"
-                placeholder="Your phone"
-                required
-        />
+        <!-- Optional Phone -->
+        <div class="form-group">
+            <label for="phone">
+                Phone <!-- no asterisk, so optional -->
+            </label>
+            <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    class="form-input"
+                    placeholder="Your phone (optional)"
+            />
+            <span class="error-text" id="phone-error">Phone is invalid</span>
+        </div>
 
         <button type="submit" class="submit-btn" disabled>Submit</button>
     </form>
@@ -199,31 +252,101 @@
     <img src="/images/bottom_logo.png" alt="Background graphic" />
 </div>
 
-<!-- OPTIONAL: Enable Submit Button When All Fields Are Filled -->
+<!-- JS VALIDATION SCRIPT -->
 <script>
     (function () {
         const form = document.getElementById('demoForm');
         const inputs = form.querySelectorAll('.form-input');
         const submitBtn = form.querySelector('.submit-btn');
 
+        // Simple email check (you can replace with a more robust regex if needed)
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        // Example phone check (very simplistic):
+        // allows digits, spaces, dashes, parentheses
+        function isValidPhone(phone) {
+            if (!phone) return true; // allow blank since it's optional
+            return /^[\d\s\-()]+$/.test(phone);
+        }
+
+        // Toggle error visibility
+        function showError(inputId, message, show) {
+            const errorSpan = document.getElementById(inputId + '-error');
+            if (!errorSpan) return;
+
+            errorSpan.textContent = message;
+            errorSpan.classList.toggle('show', show);
+        }
+
+        // Check each field validity
+        function checkFieldValidity(input) {
+            const { id, required, value } = input;
+
+            if (required && !value.trim()) {
+                // Required but empty
+                showError(id, 'This field is required', true);
+                return false;
+            } else {
+                showError(id, '', false);
+            }
+
+            // Additional checks for specific types
+            if (id === 'email' && value.trim()) {
+                if (!isValidEmail(value.trim())) {
+                    showError(id, 'Invalid email address', true);
+                    return false;
+                } else {
+                    showError(id, '', false);
+                }
+            }
+
+            if (id === 'phone' && value.trim()) {
+                if (!isValidPhone(value.trim())) {
+                    showError(id, 'Invalid phone format', true);
+                    return false;
+                } else {
+                    showError(id, '', false);
+                }
+            }
+
+            // If we reach here, input is valid
+            return true;
+        }
+
+        // Runs on every input event
         function checkFormValidity() {
             let allValid = true;
             inputs.forEach(input => {
-                if (!input.value.trim()) {
+                if (!checkFieldValidity(input)) {
                     allValid = false;
                 }
             });
             submitBtn.disabled = !allValid;
         }
 
+        // Attach event listeners
         inputs.forEach(input => {
             input.addEventListener('input', checkFormValidity);
+            // If you want to show errors on blur (losing focus):
+            // input.addEventListener('blur', () => checkFieldValidity(input));
         });
 
+        // Final check on submit
         form.addEventListener('submit', function(e) {
             e.preventDefault();
-            // Handle form submission here, e.g., via AJAX or fetch
-            alert('Form submitted!');
+            checkFormValidity();
+
+            // If still invalid, do not proceed
+            if (!form.checkValidity) {
+                // For older browsers. If needed, do a final check again:
+                // if any field is invalid, exit
+                return;
+            }
+
+            // If all valid, handle form submission, e.g. via AJAX or fetch
+            alert('Form submitted successfully!');
         });
     })();
 </script>
