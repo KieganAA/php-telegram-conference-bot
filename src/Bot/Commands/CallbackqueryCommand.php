@@ -61,7 +61,7 @@ class CallbackqueryCommand extends SystemCommand
             ],
             [
                 'name' => '@kieganAA',
-                'tag' => 'staff_member_5',
+                'tag' => 'staff_member_4',
                 'role' => '🍺 drink beer',
             ],
         ];
