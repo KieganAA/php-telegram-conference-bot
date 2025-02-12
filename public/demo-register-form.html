@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=393, initial-scale=1.0, height=852px, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+    <meta name="viewport" content="initial-scale=1.0, height=852px, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
     <title>Demo Registration Form</title>
     <link
             href="https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap"
@@ -33,9 +33,6 @@
             padding: 0;
             box-sizing: border-box;
         }
-        html {
-            height: 100%;
-        }
 
         body {
             height: 100%;
@@ -56,7 +53,7 @@
 
         .bottom-image {
             transform: translateZ(0);
-            position: absolute;
+            position: relative;
             width: 586px;      /* Original image width */
             height: 273px;     /* Original image height */
             top: 576px;        /* Position from Figma */
@@ -68,7 +65,7 @@
         .bottom-image img {
             height: 100%;
             display: block;
-            object-position: left center; /* Adjust cropping anchor */
+           /* object-position: left center; /* Adjust cropping anchor */
         }
 
 

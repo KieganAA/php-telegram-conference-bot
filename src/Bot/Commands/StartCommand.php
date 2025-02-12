@@ -33,6 +33,10 @@ class StartCommand extends UserCommand
      */
     public function execute(): ServerResponse
     {
+
+        // TODO Make separate integrations for en and ru Telegram language
+        // TODO Make separate admin dashboard for en/ru translations
+        // TODO Make separate dashboard for TG contacts on conference
         try {
             $sheetService = GoogleSheetService::getInstance();
         } catch (Exception $e) {
