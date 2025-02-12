@@ -207,13 +207,13 @@ class CallbackqueryCommand extends SystemCommand
 
             $text = "Our booth is C26. It's location you can find either on the image below or via checking the official [Affiliate World Dubai conference map] (https://affiliateworldconferences.com/dubai/exhibitors)";
 
-            return Request::sendMessage([
-                'chat_id'      => $chatId,
-                'photo'   => Request::encodeFile('/aio_booth_image.png'),
-                'caption' => $text,
-                //'text'         => $text,
+            return Request::sendPhoto([
+                'chat_id'    => $chatId,
+                'photo'      => Request::encodeFile(__DIR__ . '/aio_booth_image.png'),
+                'caption'    => $text,
                 'parse_mode' => 'Markdown',
             ]);
+
         }
 
         if ($callbackData === 'aio_contacts') {
