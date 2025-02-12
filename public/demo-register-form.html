@@ -133,16 +133,17 @@
             line-height: 16px;
             letter-spacing: -0.02em; /* ~ -2% */
             text-align: right;
-            background: #FF6A2A;
-            color: #fff;
-            padding: 4px 8px;
-            border-radius: 4px;
+
+            /* Just red text, no box */
+            color: #FF6A2A;
+            background: none;     /* no background color */
+            padding: 0;           /* remove padding */
+            border-radius: 0;     /* remove rounded corners */
 
             position: absolute;
             top: 0;
             right: 0;
-            transform: translate(-2%, -270%);
-            /* Move just above the input box */
+            transform: translate(-1%, -270%); /* Adjust as needed for positioning */
             display: none; /* Hidden by default */
         }
 
@@ -190,7 +191,7 @@
     <h1 class="header-text">Demo Registration</h1>
     <p class="instruction-text">
         Fill out this form to schedule your <br />
-        affiliate marketing demo.
+        affiliate marketing demo
     </p>
 </div>
 
