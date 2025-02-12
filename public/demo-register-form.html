@@ -330,7 +330,7 @@
             // 4. If valid, gather data and send via fetch
             const formData = new FormData(form); // includes message, email, vertical, chatId
 
-            fetch('https://aio-conference-bot/submit-demo.php', {
+            fetch('submit-demo.php', {
                 method: 'POST',
                 body: formData
             })
