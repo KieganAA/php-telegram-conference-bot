@@ -205,7 +205,7 @@ class CallbackqueryCommand extends SystemCommand
             ]);
             //$text = DatabaseService::getMessage('aio_booth_location');
 
-            $text = "Our booth is C26. It's location you can find either on the image below or via checking the official [Affiliate World Dubai conference map] (https://affiliateworldconferences.com/dubai/exhibitors)";
+            $text = "Our booth is C26. It's location you can find either on the image above or via checking the official [Affiliate World Dubai conference map](https://affiliateworldconferences.com/dubai/exhibitors)";
 
             return Request::sendPhoto([
                 'chat_id'    => $chatId,
