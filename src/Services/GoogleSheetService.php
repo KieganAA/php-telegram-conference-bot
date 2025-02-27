@@ -189,7 +189,7 @@ class GoogleSheetService
             return $response->getValues();
         } catch (Exception $e) {
             error_log('Google Sheets Error: ' . $e->getMessage());
-            return null;
+            throw new RuntimeException('Google Sheets Error: ' . $e->getMessage());
         }
     }
     public function getRowValuesByIndex(int $rowIndex, string $sheet): ?array
@@ -202,7 +202,7 @@ class GoogleSheetService
             return $values ? $values[0] : null;
         } catch (Exception $e) {
             error_log('Google Sheets Error: ' . $e->getMessage());
-            return null;
+            throw new RuntimeException('Google Sheets Error: ' . $e->getMessage());
         }
     }
 }
