@@ -115,7 +115,7 @@ class GoogleSheetService
             return true;
         } catch (Exception $e) {
             error_log('Google Sheets Error: ' . $e->getMessage());error_log('Google Sheets Error: ' . $e->getMessage());
-            return false;
+            throw new RuntimeException('Google Sheets Error: ' . $e->getMessage());
         }
     }
 
@@ -148,7 +148,7 @@ class GoogleSheetService
             return true;
         } catch (Exception $e) {
             error_log('Google Sheets Error: ' . $e->getMessage());
-            return false;
+            throw new RuntimeException('Google Sheets Error: ' . $e->getMessage());
         }
     }
 
