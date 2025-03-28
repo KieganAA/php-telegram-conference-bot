@@ -19,7 +19,7 @@ use RuntimeException;
  */
 class StartBroConfCommand extends UserCommand
 {
-    protected $name = 'start';
+    protected $name = 'startbroconf';
     protected $description = 'Start command';
     protected $usage = '/startBroConf';
     protected $version = '2.0.0';

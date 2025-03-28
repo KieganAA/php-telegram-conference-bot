@@ -19,7 +19,7 @@ use RuntimeException;
  */
 class StartStyleCommand extends UserCommand
 {
-    protected $name = 'start';
+    protected $name = 'startstyle';
     protected $description = 'Start command';
     protected $usage = '/startStyle';
     protected $version = '2.0.0';
