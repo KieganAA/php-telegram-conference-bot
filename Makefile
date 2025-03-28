@@ -30,7 +30,7 @@ restart:
 	@echo "Restarting services..."
 	sudo systemctl restart nginx
 	sudo systemctl restart mysql
-	sudo systemctl restart php-fpm
+	sudo systemctl restart php8.3-fpm
 
 # Tail Nginx error logs
 logs:
