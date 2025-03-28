@@ -118,7 +118,7 @@ class DatabaseService
         string $language_code = null,
         bool $is_premium = false,
     ): bool {
-        $sql = "INSERT INTO user (
+        $sql = "INSERT INTO 'user' (
                 id, is_bot, first_name, last_name, username, 
                 language_code, is_premium, created_at, updated_at
             ) VALUES (
@@ -164,7 +164,7 @@ class DatabaseService
         string $first_name = null,
         string $last_name = null,
     ): bool {
-        $sql = "INSERT INTO chat (
+        $sql = "INSERT INTO 'chat' (
                 id, username, first_name, last_name, 
                 created_at, updated_at
             ) VALUES (
