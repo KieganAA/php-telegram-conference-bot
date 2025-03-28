@@ -20,9 +20,9 @@ use RuntimeException;
 class StartStyleCommand extends UserCommand
 {
     protected $name = 'startstyle';
-    protected $description = 'Start command';
+    protected $description = 'Start style configuration';
     protected $usage = '/startStyle';
-    protected $version = '2.0.0';
+    protected $version = '1.0.0';
 
     /**
      * Execute the command.
@@ -37,31 +37,13 @@ class StartStyleCommand extends UserCommand
         // TODO Make separate admin dashboard for en/ru translations
         // TODO Make separate dashboard for TG contacts on conference
 
+
+
         $message = $this->getMessage();
         $chatId  = $message->getChat()->getId();
-        $username  = $message->getFrom()->getUsername();
-        $fullname = $message->getFrom()->getFirstName() . ' ' . $message->getFrom()->getLastName();
-        $timestamp = date('Y-m-d H:i:s');
-        $languageCode  = $message->getFrom()->getLanguageCode();
-
-        $keyboard = new InlineKeyboard(
-            [
-                ['text' => 'Contact AIO Sales Manager', 'url' => 'https://t.me/aio_presale'],
-            ],
-            [
-                ['text' => 'Check AIO Official Website', 'url' => 'https://aio.tech'],
-            ],
-            [
-                ['text' => 'View Additional Info', 'callback_data' => 'additional_info'],
-            ],
-        )
-        ;
-
-        $text = DatabaseService::getMessage('welcome_text');
         return Request::sendMessage([
             'chat_id'      => $chatId,
-            'text'         => 'Hey BroConf',
-            'reply_markup' => $keyboard,
+            'text'         => 'Hey Style',
             'parse_mode'   => 'HTML',
         ]);
     }
