@@ -39,9 +39,9 @@ class StartCommand extends UserCommand
 
         $message = $this->getMessage();
         $chatId  = $message->getChat()->getId();
+        $userId  = $message->getFrom()->getId();
         $username  = $message->getFrom()->getUsername();
         $fullname = $message->getFrom()->getFirstName() . ' ' . $message->getFrom()->getLastName();
-        $timestamp = date('Y-m-d H:i:s');
         $languageCode  = $message->getFrom()->getLanguageCode();
 
         $keyboard = new InlineKeyboard(
