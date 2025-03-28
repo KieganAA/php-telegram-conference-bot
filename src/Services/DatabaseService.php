@@ -118,9 +118,10 @@ class DatabaseService
         string $language_code = null,
         bool $is_premium = false,
     ): bool {
-        $sql = "INSERT INTO 'user' (
+        $sql = "INSERT INTO `user` (  //
                 id, is_bot, first_name, last_name, username, 
                 language_code, is_premium, created_at, updated_at
+            )
             ) VALUES (
                 :id, :is_bot, :first_name, :last_name, :username, 
                 :language_code, :is_premium, NOW(), NOW()
@@ -164,12 +165,12 @@ class DatabaseService
         string $first_name = null,
         string $last_name = null,
     ): bool {
-        $sql = "INSERT INTO 'chat' (
-                id, username, first_name, last_name, 
+        $sql = "INSERT INTO `chat` (
+                id, type, username, first_name, last_name, 
                 created_at, updated_at
             ) VALUES (
-                :id, :type,  :username, :first_name, :last_name, 
-                ,  NOW(), NOW(),
+                :id, :type, :username, :first_name, :last_name, 
+                NOW(), NOW()
             )
             ON DUPLICATE KEY UPDATE
                 type = :type_update,
@@ -188,7 +189,6 @@ class DatabaseService
             ':first_name' => $first_name,
             ':last_name' => $last_name,
 
-            // Update parameters
             ':type_update' => $type,
             ':username_update' => $username,
             ':first_name_update' => $first_name,
