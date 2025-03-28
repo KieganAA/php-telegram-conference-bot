@@ -165,8 +165,8 @@ class DatabaseService
         string $last_name = null,
     ): bool {
         $sql = "INSERT INTO chat (
-                id, title, username, first_name, last_name, 
-                is_forum, created_at, updated_at, old_id
+                id, username, first_name, last_name, 
+                created_at, updated_at
             ) VALUES (
                 :id, :type,  :username, :first_name, :last_name, 
                 ,  NOW(), NOW(),
