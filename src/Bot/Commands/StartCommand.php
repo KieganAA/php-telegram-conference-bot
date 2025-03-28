@@ -38,21 +38,46 @@ class StartCommand extends UserCommand
         // TODO Make separate dashboard for TG contacts on conference
 
         $message = $this->getMessage();
+        $chat = $message->getChat();
+        $user = $message->getFrom();
+
+        DatabaseService::saveUser(
+            $user->getId(),
+            $user->getIsBot(),
+            $user->getFirstName(),
+            $user->getLastName(),
+            $user->getUsername(),
+            $user->getLanguageCode(),
+            $user->getIsPremium(),
+            $user->getAddedToAttachmentMenu()
+        );
+
+        DatabaseService::saveChat(
+            $chat->getId(),
+            $chat->getType(),
+            $chat->getTitle(),
+            $chat->getUsername(),
+            $chat->getFirstName(),
+            $chat->getLastName(),
+            $chat->getIsForum(),
+            $chat->allMembersAreAdministrators(),
+            $chat->getOldId() // If available in your Chat object
+        );
+
+        DatabaseService::linkUserChat($user->getId(), $chat->getId());
+
+        $message = $this->getMessage();
         $chatId  = $message->getChat()->getId();
-        $userId  = $message->getFrom()->getId();
-        $username  = $message->getFrom()->getUsername();
-        $fullname = $message->getFrom()->getFirstName() . ' ' . $message->getFrom()->getLastName();
-        $languageCode  = $message->getFrom()->getLanguageCode();
 
         $keyboard = new InlineKeyboard(
+            [
+                ['text' => 'Get Tracker Invite Code', 'callback_data' => 'tracker_invite_code'],
+            ],
             [
                 ['text' => 'Contact AIO Sales Manager', 'url' => 'https://t.me/aio_presale'],
             ],
             [
-                ['text' => 'Check AIO Official Website', 'url' => 'https://aio.tech'],
-            ],
-            [
-                ['text' => 'View Additional Info', 'callback_data' => 'additional_info'],
+                ['text' => 'Our Features', 'url' => 'https://aio.tech'],
             ],
         )
         ;
