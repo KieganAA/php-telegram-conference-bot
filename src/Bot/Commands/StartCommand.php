@@ -49,7 +49,6 @@ class StartCommand extends UserCommand
             $user->getUsername(),
             $user->getLanguageCode(),
             $user->getIsPremium(),
-            $user->getAddedToAttachmentMenu()
         );
 
         DatabaseService::saveChat(
@@ -59,9 +58,6 @@ class StartCommand extends UserCommand
             $chat->getUsername(),
             $chat->getFirstName(),
             $chat->getLastName(),
-            $chat->getIsForum(),
-            $chat->allMembersAreAdministrators(),
-            $chat->getOldId() // If available in your Chat object
         );
 
         DatabaseService::linkUserChat($user->getId(), $chat->getId());

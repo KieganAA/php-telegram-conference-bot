@@ -117,14 +117,13 @@ class DatabaseService
         string $username = null,
         string $language_code = null,
         bool $is_premium = false,
-        bool $added_to_attachment_menu = false
     ): bool {
         $sql = "INSERT INTO user (
                 id, is_bot, first_name, last_name, username, 
-                language_code, is_premium, added_to_attachment_menu, created_at, updated_at
+                language_code, is_premium, created_at, updated_at
             ) VALUES (
                 :id, :is_bot, :first_name, :last_name, :username, 
-                :language_code, :is_premium, :added_to_attachment_menu, NOW(), NOW()
+                :language_code, :is_premium, NOW(), NOW()
             )
             ON DUPLICATE KEY UPDATE
                 first_name = :first_name_update,
@@ -132,7 +131,6 @@ class DatabaseService
                 username = :username_update,
                 language_code = :language_code_update,
                 is_premium = :is_premium_update,
-                added_to_attachment_menu = :added_to_attachment_menu_update,
                 updated_at = NOW()";
 
         $pdo = self::getInstance();
@@ -146,7 +144,6 @@ class DatabaseService
             ':username' => $username,
             ':language_code' => $language_code,
             ':is_premium' => (int)$is_premium,
-            ':added_to_attachment_menu' => (int)$added_to_attachment_menu,
 
             // Update parameters
             ':first_name_update' => $first_name,
@@ -154,7 +151,6 @@ class DatabaseService
             ':username_update' => $username,
             ':language_code_update' => $language_code,
             ':is_premium_update' => (int)$is_premium,
-            ':added_to_attachment_menu_update' => (int)$added_to_attachment_menu,
         ]);
     }
 
@@ -168,16 +164,13 @@ class DatabaseService
         string $username = null,
         string $first_name = null,
         string $last_name = null,
-        bool $is_forum = false,
-        bool $all_members_are_administrators = false,
-        int $old_id = null
     ): bool {
         $sql = "INSERT INTO chat (
                 id, type, title, username, first_name, last_name, 
-                is_forum, all_members_are_administrators, created_at, updated_at, old_id
+                is_forum, created_at, updated_at, old_id
             ) VALUES (
                 :id, :type, :title, :username, :first_name, :last_name, 
-                :is_forum, :all_members_are_administrators, NOW(), NOW(), :old_id
+                ,  NOW(), NOW(),
             )
             ON DUPLICATE KEY UPDATE
                 type = :type_update,
@@ -185,9 +178,6 @@ class DatabaseService
                 username = :username_update,
                 first_name = :first_name_update,
                 last_name = :last_name_update,
-                is_forum = :is_forum_update,
-                all_members_are_administrators = :all_members_are_administrators_update,
-                old_id = :old_id_update,
                 updated_at = NOW()";
 
         $pdo = self::getInstance();
@@ -200,9 +190,6 @@ class DatabaseService
             ':username' => $username,
             ':first_name' => $first_name,
             ':last_name' => $last_name,
-            ':is_forum' => (int)$is_forum,
-            ':all_members_are_administrators' => (int)$all_members_are_administrators,
-            ':old_id' => $old_id,
 
             // Update parameters
             ':type_update' => $type,
@@ -210,9 +197,6 @@ class DatabaseService
             ':username_update' => $username,
             ':first_name_update' => $first_name,
             ':last_name_update' => $last_name,
-            ':is_forum_update' => (int)$is_forum,
-            ':all_members_are_administrators_update' => (int)$all_members_are_administrators,
-            ':old_id_update' => $old_id,
         ]);
     }
 
