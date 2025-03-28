@@ -54,7 +54,6 @@ class StartCommand extends UserCommand
         DatabaseService::saveChat(
             $chat->getId(),
             $chat->getType(),
-            $chat->getTitle(),
             $chat->getUsername(),
             $chat->getFirstName(),
             $chat->getLastName(),

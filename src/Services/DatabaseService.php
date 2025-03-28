@@ -160,21 +160,19 @@ class DatabaseService
     public static function saveChat(
         int $id,
         string $type,
-        string $title = '',
         string $username = null,
         string $first_name = null,
         string $last_name = null,
     ): bool {
         $sql = "INSERT INTO chat (
-                id, type, title, username, first_name, last_name, 
+                id, title, username, first_name, last_name, 
                 is_forum, created_at, updated_at, old_id
             ) VALUES (
-                :id, :type, :title, :username, :first_name, :last_name, 
+                :id, :type,  :username, :first_name, :last_name, 
                 ,  NOW(), NOW(),
             )
             ON DUPLICATE KEY UPDATE
                 type = :type_update,
-                title = :title_update,
                 username = :username_update,
                 first_name = :first_name_update,
                 last_name = :last_name_update,
@@ -186,14 +184,12 @@ class DatabaseService
         return $stmt->execute([
             ':id' => $id,
             ':type' => $type,
-            ':title' => $title,
             ':username' => $username,
             ':first_name' => $first_name,
             ':last_name' => $last_name,
 
             // Update parameters
             ':type_update' => $type,
-            ':title_update' => $title,
             ':username_update' => $username,
             ':first_name_update' => $first_name,
             ':last_name_update' => $last_name,
