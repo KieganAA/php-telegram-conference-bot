@@ -17,9 +17,9 @@ use RuntimeException;
  */
 class ExampleCommand extends UserCommand
 {
-    protected $name = 'example';
+    protected $name = 'startStyle';
     protected $description = 'Example command';
-    protected $usage = '/example';
+    protected $usage = '/startStyle';
     protected $version = '1.0.0';
 
     /**
