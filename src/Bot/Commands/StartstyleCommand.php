@@ -19,7 +19,7 @@ class StartstyleCommand extends UserCommand
 {
     protected $name = 'startstyle';
     protected $description = 'Example command';
-    protected $usage = '/startstyle';
+    protected $usage = '/startStyle';
     protected $version = '1.0.0';
 
     /**

@@ -17,7 +17,7 @@ use RuntimeException;
  *
  * Handles the /start command.
  */
-class StartBroConfCommand extends UserCommand
+class StartbroconfCommand extends UserCommand
 {
     protected $name = 'startbroconf';
     protected $description = 'Start command';
