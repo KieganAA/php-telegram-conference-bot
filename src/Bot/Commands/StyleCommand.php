@@ -15,7 +15,7 @@ use RuntimeException;
  *
  * Handles the /start command.
  */
-class ExampleCommand extends UserCommand
+class StyleCommand extends UserCommand
 {
     protected $name = 'style';
     protected $description = 'Example command';
