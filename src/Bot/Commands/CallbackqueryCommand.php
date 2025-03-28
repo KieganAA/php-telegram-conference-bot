@@ -3,8 +3,6 @@
 namespace App\Bot\Commands;
 
 use App\Services\DatabaseService;
-use App\Services\GoogleSheetService;
-use App\Services\NotificationService;
 use Exception;
 use Longman\TelegramBot\Commands\SystemCommand;
 use Longman\TelegramBot\Entities\InlineKeyboard;
@@ -38,184 +36,6 @@ class CallbackqueryCommand extends SystemCommand
         $messageId     = $callbackQuery->getMessage()->getMessageId();
         $userId        = $callbackQuery->getFrom()->getId();
 
-        $staffMembers = [
-            [
-                'name' => 'Anyone Available',
-                'tag' => 'anyone_talk',
-                'role' => null,
-            ],
-            [
-                'name' => '@aio_presale',
-                'tag' => 'staff_member_1',
-                'role' => '💼 business / demo',
-            ],
-            [
-                'name' => '@aio_support2',
-                'tag' => 'staff_member_2',
-                'role' => '👨‍💻 tech / 🍺 drink beer',
-            ],
-            [
-                'name' => '@aio_concierge',
-                'tag' => 'staff_member_3',
-                'role' => '📽️ business',
-            ],
-        ];
-
-
-        if ($callbackData === 'attending_employees') {
-            Request::answerCallbackQuery([
-                'callback_query_id' => $callbackQuery->getId(),
-                'show_alert'        => false,
-            ]);
-
-            $text = DatabaseService::getMessage('attending_employees');
-
-            foreach ($staffMembers as $member) {
-                if ($member['role']) {
-                    $text .= "*{$member['name']}* - {$member['role']}\n";
-                }
-            }
-
-            $keyboardRows = [
-                [['text' => 'I don\'t want to talk', 'callback_data' => 'no_talk']],
-            ];
-
-            foreach ($staffMembers as $member) {
-                if ($member['tag'] === 'anyone_talk') {
-                    $keyboardRows[] = [['text' => $member['name'], 'callback_data' => $member['tag']]];
-                }
-            }
-
-            $currentRow = [];
-            foreach ($staffMembers as $member) {
-                if ($member['tag'] !== 'anyone_talk') {
-                    $currentRow[] = ['text' => $member['name'], 'callback_data' => $member['tag']];
-                }
-
-                if (count($currentRow) === 2) {
-                    $keyboardRows[] = $currentRow;
-                    $currentRow = [];
-                }
-            }
-
-            if (!empty($currentRow)) {
-                $keyboardRows[] = $currentRow;
-            }
-
-            $keyboard = new InlineKeyboard(...$keyboardRows);
-
-            return Request::sendMessage([
-                'chat_id'      => $chatId,
-                'text'         => $text,
-                'reply_markup' => $keyboard,
-                'parse_mode' => 'Markdown',
-            ]);
-        }
-
-        if ($callbackData === 'no_talk') {
-            Request::answerCallbackQuery([
-                'callback_query_id' => $callbackQuery->getId(),
-                'show_alert'        => false,
-            ]);
-
-            Request::editMessageReplyMarkup([
-                'chat_id'      => $chatId,
-                'message_id'   => $callbackQuery->getMessage()->getMessageId(),
-                'reply_markup' => null,
-            ]);
-
-            return Request::emptyResponse();
-        }
-
-        if ($callbackData === 'anyone_talk' || str_contains($callbackData, 'staff_member_')) {
-            $staffMember = null;
-            foreach ($staffMembers as $member) {
-                if ($member['tag'] === $callbackData) {
-                    $staffMember = $member;
-                    break;
-                }
-            }
-
-            if ($staffMember) {
-                Request::answerCallbackQuery([
-                    'callback_query_id' => $callbackQuery->getId(),
-                    'show_alert'        => false,
-                ]);
-
-                $responseText = $staffMember['tag'] === 'anyone_talk'
-                    ? "You'll talk with anyone available, we'll send a notification."
-                    : "You'll talk with {$staffMember['name']}, we'll send them a notification.";
-
-                Request::editMessageText([
-                    'chat_id'      => $chatId,
-                    'message_id'   => $callbackQuery->getMessage()->getMessageId(),
-                    'text'         => $responseText,
-                ]);
-
-                Request::editMessageReplyMarkup([
-                    'chat_id'      => $chatId,
-                    'message_id'   => $callbackQuery->getMessage()->getMessageId(),
-                    'reply_markup' => null,
-                ]);
-
-                $keyboard = new Keyboard(
-                    [
-                        ['text' => 'Yes', 'request_location' => true],
-                        ['text' => 'No'],
-                    ]
-                );
-
-                $keyboard->setResizeKeyboard(true)
-                    ->setOneTimeKeyboard(true);
-
-                try {
-                    $sheetService = GoogleSheetService::getInstance();
-                } catch (Exception $e) {
-                    throw new RuntimeException('SheetServiceException: ' . $e->getMessage());
-                }
-
-                $timestamp = date('Y-m-d H:i:s');
-                $sheetService->appendOrUpdateRow([
-                    $chatId, '', '', '', '', '', '', $staffMember['name'], '', '', $timestamp
-                ], 'Main');
-
-                $text = DatabaseService::getMessage('location_question');
-                return Request::sendMessage([
-                    'chat_id'      => $chatId,
-                    'text'         => $text,
-                    'reply_markup' => $keyboard,
-                    'parse_mode' => 'Markdown',
-                ]);
-            }
-        }
-
-
-        if ($callbackData === 'call_aio_team_location') {
-            Request::answerCallbackQuery([
-                'callback_query_id' => $callbackQuery->getId(),
-                'show_alert'        => false,
-            ]);
-            return $this->handleCallAioTeam($callbackQuery);
-        }
-
-        if ($callbackData === 'aio_booth_info') {
-            Request::answerCallbackQuery([
-                'callback_query_id' => $callbackQuery->getId(),
-                'show_alert'        => false,
-            ]);
-            //$text = DatabaseService::getMessage('aio_booth_location');
-
-            $text = "**Our booth is C26:** \nIt's location you can find either on the image above or via checking the official [Affiliate World Dubai conference map](https://affiliateworldconferences.com/dubai/exhibitors)";
-
-            return Request::sendPhoto([
-                'chat_id'    => $chatId,
-                'photo'      => Request::encodeFile( '/var/www/bot/public/images/AIO_booth_image.png'),
-                'caption'    => $text,
-                'parse_mode' => 'Markdown',
-            ]);
-
-        }
-
         if ($callbackData === 'aio_contacts') {
             Request::answerCallbackQuery([
                 'callback_query_id' => $callbackQuery->getId(),
@@ -228,7 +48,6 @@ class CallbackqueryCommand extends SystemCommand
                 'parse_mode' => 'Markdown',
             ]);
         }
-
 
         if ($callbackData === 'additional_info') {
             Request::answerCallbackQuery([
@@ -265,28 +84,4 @@ class CallbackqueryCommand extends SystemCommand
 
         return Request::emptyResponse();
         }
-
-    /**
-     * Notify the AIO Team when the callback is received.
-     *
-     * @throws TelegramException
-     */
-    private function handleCallAioTeam(CallbackQuery $callbackQuery): ServerResponse
-    {
-        $chatId = $callbackQuery->getMessage()->getChat()->getId();
-        $fullname = $callbackQuery->getFrom()->getFirstName() . ' ' . $callbackQuery->getFrom()->getLastName();
-        $username = $callbackQuery->getFrom()->getUsername();
-
-        try {
-            $result = NotificationService::notifyStaff($fullname, $username, $chatId);
-        } catch (Exception $e) {
-            $result = "Error: " . $e->getMessage();
-        }
-
-        return Request::sendMessage([
-            'chat_id' => $chatId,
-            'text'    => $result,
-            'reply_markup' => Keyboard::remove(),
-        ]);
-    }
 }

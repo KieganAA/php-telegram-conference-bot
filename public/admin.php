@@ -256,7 +256,6 @@ $messages = DatabaseService::getAllMessages();
     <tbody>
     <?php foreach ($messages as $msg): ?>
         <?php
-        // Convert Markdown to HTML
         try {
             $parsedHtml = $converter->convert($msg['text'])->__toString();
         } catch (CommonMarkException $e) {

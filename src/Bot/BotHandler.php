@@ -6,11 +6,6 @@ use Longman\TelegramBot\Telegram;
 use Longman\TelegramBot\Exception\TelegramException;
 use RuntimeException;
 
-/**
- * Class BotHandler
- *
- * Central class that initializes and handles incoming updates from Telegram.
- */
 class BotHandler
 {
     /**
@@ -18,11 +13,6 @@ class BotHandler
      */
     protected Telegram $telegram;
 
-    /**
-     * BotHandler constructor.
-     *
-     * @param string $botToken The Telegram bot token.
-     */
     public function __construct(string $botToken)
     {
         $botUsername = $_ENV['TELEGRAM_BOT_USERNAME'] ?? '';
@@ -37,9 +27,6 @@ class BotHandler
         }
     }
 
-    /**
-     * Handle incoming update (webhook).
-     */
     public function handle(): void
     {
         try {

@@ -37,7 +37,7 @@ logs:
 	@echo "Tailing Nginx error logs..."
 	sudo tail -f /var/log/nginx/error.log
 
-# Tail Nginx error logs
+# Tail Nginx access logs
 access-logs:
 	@echo "Tailing Nginx error logs..."
 	sudo tail -f /var/log/nginx/access.log
@@ -59,48 +59,6 @@ clear-php-logs:
 	@echo "Clearing PHP-FPM logs..."
 	sudo truncate -s 0 /var/log/php-fpm/error.log
 	@echo "PHP-FPM logs cleared."
-
-# Install PHP dependencies
-install-dependencies:
-	@echo "Installing PHP dependencies..."
-	composer install
-
-# Update PHP dependencies
-update-dependencies:
-	@echo "Updating PHP dependencies..."
-	composer update
-
-# Check for syntax errors in PHP files
-lint:
-	@echo "Running PHP linting..."
-	find . -type f -name "*.php" -exec php -l {} \;
-
-# Run PHPUnit tests
-test:
-	@echo "Running PHPUnit tests..."
-	vendor/bin/phpunit --testdox
-
-# Check code style with PHP CS Fixer
-fix-style:
-	@echo "Fixing code style issues..."
-	vendor/bin/php-cs-fixer fix
-
-# Check for security vulnerabilities using Composer
-security-check:
-	@echo "Checking for security vulnerabilities..."
-	composer audit
-
-# Export MySQL database
-db-export:
-	@echo "Exporting database..."
-	mysqldump -u root -p conference_bot_db > database_export.sql
-	@echo "Database exported to database_export.sql."
-
-# Import MySQL database
-db-import:
-	@echo "Importing database..."
-	mysql -u root -p conference_bot_db < database_import.sql
-	@echo "Database imported from database_import.sql."
 
 # Clear cache (example for Laravel projects)
 clear-cache:

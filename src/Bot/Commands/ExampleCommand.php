@@ -2,7 +2,6 @@
 
 namespace App\Bot\Commands;
 
-use App\Services\GoogleSheetService;
 use Exception;
 use Longman\TelegramBot\Commands\UserCommand;
 use Longman\TelegramBot\Entities\InlineKeyboard;
@@ -33,30 +32,15 @@ class ExampleCommand extends UserCommand
     public function execute(): ServerResponse
     {
         $message = $this->getMessage();
+        $timestamp = date('Y-m-d H:i:s');
         $chatId  = $message->getChat()->getId();
+        $messageId     = $message->getMessageId();
+        $userId        = $message->getFrom()->getId();
         $username  = $message->getFrom()->getUsername();
+        $language = $this->getMessage()->getFrom()->getLanguageCode();
         $text    = trim($message->getText(true));
 
-        try {
-            $sheetService = GoogleSheetService::getInstance();
-        } catch (Exception $e) {
-            throw new RuntimeException('SheetServiceException: ' . $e->getMessage());
-        }
-
-        $row = [
-            $chatId,
-            $username,
-            $text,
-            date('Y-m-d H:i:s'),
-        ];
-
-        try {
-            $sheetService->appendRow($row, 'Registrations!A2');
-        } catch (Exception $e) {
-            throw new RuntimeException($e->getMessage());
-        }
-
-        $textResponse = "Example command run successfully!\n";
+        $textResponse = "Example command run successfully!\n ";
 
         return Request::sendMessage([
             'chat_id' => $chatId,

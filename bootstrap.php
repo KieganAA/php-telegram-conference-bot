@@ -37,9 +37,6 @@ try {
     error_log('NotificationServiceException: ' . $e->getMessage());
 }
 
-/**
- * 5. Exception Handler
- */
 set_exception_handler(/**
  * @throws TelegramException
  */ function (\Throwable $throwable) use ($notificationService, $errorChatId) {
@@ -51,9 +48,6 @@ set_exception_handler(/**
     error_log($message);
 });
 
-/**
- * 6. Error Handler (convert PHP warnings/notices to the same flow)
- */
 set_error_handler(/**
  * @throws TelegramException
  */ function ($severity, $message, $file, $line) use ($notificationService, $errorChatId) {
@@ -72,9 +66,6 @@ set_error_handler(/**
     return false;
 });
 
-/**
- * 7. Shutdown Function for fatal errors (e.g., E_ERROR)
- */
 register_shutdown_function(/**
  * @throws TelegramException
  */ function () use ($notificationService, $errorChatId) {

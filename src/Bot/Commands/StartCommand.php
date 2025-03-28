@@ -3,7 +3,6 @@
 namespace App\Bot\Commands;
 
 use App\Services\DatabaseService;
-use App\Services\GoogleSheetService;
 use Dflydev\DotAccessData\Data;
 use Exception;
 use Longman\TelegramBot\Commands\UserCommand;
@@ -37,24 +36,13 @@ class StartCommand extends UserCommand
         // TODO Make separate integrations for en and ru Telegram language
         // TODO Make separate admin dashboard for en/ru translations
         // TODO Make separate dashboard for TG contacts on conference
-        try {
-            $sheetService = GoogleSheetService::getInstance();
-        } catch (Exception $e) {
-            error_log('SheetServiceException: ' . $e->getMessage());
-            throw new RuntimeException('SheetServiceException: ' . $e->getMessage());
-        }
 
         $message = $this->getMessage();
         $chatId  = $message->getChat()->getId();
-
         $username  = $message->getFrom()->getUsername();
         $fullname = $message->getFrom()->getFirstName() . ' ' . $message->getFrom()->getLastName();
         $timestamp = date('Y-m-d H:i:s');
         $languageCode  = $message->getFrom()->getLanguageCode();
-
-        $sheetService->appendOrUpdateRow([
-            $chatId, $fullname, $username, $languageCode, '','','','','','', $timestamp
-        ], 'Main');
 
         $keyboard = new InlineKeyboard(
             [
@@ -72,7 +60,7 @@ class StartCommand extends UserCommand
         $text = DatabaseService::getMessage('welcome_text');
         return Request::sendMessage([
             'chat_id'      => $chatId,
-            'text'         => $text,
+            'text'         => 'Hello, below you can get to know about us more',
             'reply_markup' => $keyboard,
             'parse_mode'   => 'HTML',
         ]);
