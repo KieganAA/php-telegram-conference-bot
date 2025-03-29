@@ -48,13 +48,7 @@ class CallbackqueryCommand extends SystemCommand
             $keyboard = new InlineKeyboard(
                 [
                     ['text' => 'Get Tracker Invite Code', 'callback_data' => 'tracker_invite_code'],
-                ],
-                [
-                    ['text' => 'Contact AIO Sales Manager', 'url' => 'https://t.me/aio_presale'],
-                ],
-                [
-                    ['text' => 'Our Features', 'url' => 'https://aio.tech/features'],
-                ],
+                ]
             )
             ;
 
