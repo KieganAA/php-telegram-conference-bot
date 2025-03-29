@@ -41,28 +41,38 @@ class StartCommand extends UserCommand
         $chat = $message->getChat();
         $user = $message->getFrom();
 
-        DatabaseService::saveUser(
-            $user->getId(),
-            $user->getIsBot(),
-            $user->getFirstName(),
-            $user->getLastName(),
-            $user->getUsername(),
-            $user->getLanguageCode(),
-            $user->getIsPremium(),
-        );
+        try {
+            DatabaseService::saveUser(
+                $user->getId(),
+                $user->getIsBot(),
+                $user->getFirstName(),
+                $user->getLastName(),
+                $user->getUsername(),
+                $user->getLanguageCode(),
+                $user->getIsPremium(),
+            );
 
-        DatabaseService::saveChat(
-            $chat->getId(),
-            $chat->getType(),
-            $chat->getUsername(),
-            $chat->getFirstName(),
-            $chat->getLastName(),
-        );
+            DatabaseService::saveChat(
+                $chat->getId(),
+                $chat->getType(),
+                $chat->getUsername(),
+                $chat->getFirstName(),
+                $chat->getLastName(),
+            );
+        } catch (Exception $e) {
+            $message = $this->getMessage();
+            $chatId  = $message->getChat()->getId();
+            return Request::sendMessage([
+                'chat_id'      => $chatId,
+                'text'         => 'DEBUG MODE',
+                'parse_mode'   => 'HTML',
+            ]);
+        }
+
 
         DatabaseService::linkUserChat($user->getId(), $chat->getId());
 
-        $message = $this->getMessage();
-        $chatId  = $message->getChat()->getId();
+
 
         $keyboard = new InlineKeyboard(
             [
