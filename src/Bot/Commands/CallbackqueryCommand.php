@@ -39,7 +39,7 @@ class CallbackqueryCommand extends SystemCommand
         if ($callbackData === 'tracker_invite_code') {
             Request::answerCallbackQuery([
                 'callback_query_id' => $callbackQuery->getId(),
-                'show_alert'        => false,
+                'show_alert' => false,
             ]);
 
             $text = DatabaseService::getMessage('tracker_invite_code');
@@ -53,13 +53,9 @@ class CallbackqueryCommand extends SystemCommand
             );
 
             return Request::sendMessage([
-                'chat_id'      => $chatId,
-                'text'         => 'Sample Invite code, click  button below',
+                'chat_id' => $chatId,
+                'text' => 'Hello, below you can get to know about us more',
                 'reply_markup' => $keyboard,
-                'parse_mode' => 'Markdown',
-            ]);
-        }
-
-        return Request::emptyResponse();
-        }
-}
+                'parse_mode' => 'HTML',
+            ]);}
+        return Request::emptyResponse();}}
