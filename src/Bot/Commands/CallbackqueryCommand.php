@@ -36,15 +36,27 @@ class CallbackqueryCommand extends SystemCommand
         $messageId     = $callbackQuery->getMessage()->getMessageId();
         $userId        = $callbackQuery->getFrom()->getId();
 
-        if ($callbackData === 'aio_contacts') {
+        if ($callbackData === 'tracker_invite_code') {
             Request::answerCallbackQuery([
                 'callback_query_id' => $callbackQuery->getId(),
                 'show_alert'        => false,
             ]);
-            $text = DatabaseService::getMessage('business_contacts');
+
+            $text = DatabaseService::getMessage('tracker_invite_code');
+            $trackerInviteCode = 'Debug';
+
+            $keyboard = new InlineKeyboard(
+                [
+                    ['text' => 'Get and Use Tracker Invite Code', 'url' => 'https//app.aio.tech?invite_code=' . $trackerInviteCode],
+                ]
+            )
+            ;
+
+
             return Request::sendMessage([
                 'chat_id'      => $chatId,
-                'text'         => $text,
+                'text'         => 'Sample Invite code, click  button below',
+                'keyboard' => $keyboard,
                 'parse_mode' => 'Markdown',
             ]);
         }
