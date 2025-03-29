@@ -47,8 +47,14 @@ class CallbackqueryCommand extends SystemCommand
 
             $keyboard = new InlineKeyboard(
                 [
-                    ['text' => 'Get and Use Tracker Invite Code', 'url' => 'https//app.aio.tech?invite_code=' . $trackerInviteCode],
-                ]
+                    ['text' => 'Get Tracker Invite Code', 'callback_data' => 'tracker_invite_code'],
+                ],
+                [
+                    ['text' => 'Contact AIO Sales Manager', 'url' => 'https://t.me/aio_presale'],
+                ],
+                [
+                    ['text' => 'Our Features', 'url' => 'https://aio.tech/features'],
+                ],
             )
             ;
 
@@ -56,7 +62,7 @@ class CallbackqueryCommand extends SystemCommand
             return Request::sendMessage([
                 'chat_id'      => $chatId,
                 'text'         => 'Sample Invite code, click  button below',
-                'reply_markup' => $keyboard,
+                'keyboard' => $keyboard,
                 'parse_mode' => 'Markdown',
             ]);
         }
