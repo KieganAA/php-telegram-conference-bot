@@ -64,7 +64,7 @@ class StartCommand extends UserCommand
             $chatId  = $message->getChat()->getId();
             return Request::sendMessage([
                 'chat_id'      => $chatId,
-                'text'         => 'DEBUG MODE',
+                'text'         => 'DEBUG MODE, CURRENT EXCEPTION' . $e->getMessage(),
                 'parse_mode'   => 'HTML',
             ]);
         }
