@@ -170,7 +170,6 @@ class DatabaseService
                 NOW(), NOW()
             )
             ON DUPLICATE KEY UPDATE
-                type = :type_update,
                 username = :username_update,
                 first_name = :first_name_update,
                 last_name = :last_name_update,
