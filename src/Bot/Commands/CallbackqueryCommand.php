@@ -42,13 +42,13 @@ class CallbackqueryCommand extends SystemCommand
                 'show_alert' => false,
             ]);
 
-            $text = DatabaseService::getMessage('tracker_invite_code');
+            //$text = DatabaseService::getMessage('tracker_invite_code');
 
             $trackerInviteCode = 'test';
 
             $keyboard = new InlineKeyboard(
                 [
-                    ['text' => 'Get and Use Tracker Invite Code', 'url' => 'https//app.aio.tech?invite_code='],
+                    ['text' => 'Use Tracker Invite Code', 'url' => 'https//app.aio.tech?invite_code='],
                 ]
             );
 
@@ -58,4 +58,5 @@ class CallbackqueryCommand extends SystemCommand
                 'reply_markup' => $keyboard,
                 'parse_mode' => 'HTML',
             ]);}
+
         return Request::emptyResponse();}}
