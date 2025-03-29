@@ -78,7 +78,7 @@ class StartCommand extends UserCommand
                 ['text' => 'Contact AIO Sales Manager', 'url' => 'https://t.me/aio_presale'],
             ],
             [
-                ['text' => 'Our Features', 'url' => 'https://aio.tech'],
+                ['text' => 'Our Features', 'url' => 'https://aio.tech/features'],
             ],
         )
         ;

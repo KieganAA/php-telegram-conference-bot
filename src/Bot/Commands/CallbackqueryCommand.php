@@ -56,7 +56,7 @@ class CallbackqueryCommand extends SystemCommand
             return Request::sendMessage([
                 'chat_id'      => $chatId,
                 'text'         => 'Sample Invite code, click  button below',
-                'keyboard' => $keyboard,
+                'reply_markup' => $keyboard,
                 'parse_mode' => 'Markdown',
             ]);
         }
