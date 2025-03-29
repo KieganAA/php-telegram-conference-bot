@@ -43,52 +43,18 @@ class CallbackqueryCommand extends SystemCommand
             ]);
 
             $text = DatabaseService::getMessage('tracker_invite_code');
-            $trackerInviteCode = 'Debug';
+
+            $trackerInviteCode = 'test';
 
             $keyboard = new InlineKeyboard(
                 [
                     ['text' => 'Get and Use Tracker Invite Code', 'url' => 'https//app.aio.tech?invite_code=' . $trackerInviteCode],
                 ]
-            )
-            ;
-
+            );
 
             return Request::sendMessage([
                 'chat_id'      => $chatId,
                 'text'         => 'Sample Invite code, click  button below',
-                'reply_markup' => $keyboard,
-                'parse_mode' => 'Markdown',
-            ]);
-        }
-
-        if ($callbackData === 'additional_info') {
-            Request::answerCallbackQuery([
-                'callback_query_id' => $callbackQuery->getId(),
-                'show_alert'        => false,
-            ]);
-            $baseUrl = $_ENV['BASE_URL'];
-            $webAppUrl = sprintf('%s/demo-register-form.html?chatId=%s', $baseUrl, $chatId);
-            $text = DatabaseService::getMessage('additional_info');
-
-            $keyboard = new InlineKeyboard(
-                [
-                    ['text' => 'AIO Booth Info', 'callback_data' => 'aio_booth_info'],
-                ],
-                [
-                    ['text' => 'Attending Employees', 'callback_data' => 'attending_employees'],
-                ],
-                [
-                    ['text' => 'Book a Demo Call', 'web_app' => ['url' => $webAppUrl]],
-                ],
-                [
-                    ['text' => 'Business Contacts', 'callback_data' => 'aio_contacts'],
-                ]
-            )
-            ;
-
-            return Request::sendMessage([
-                'chat_id'      => $chatId,
-                'text'         => $text,
                 'reply_markup' => $keyboard,
                 'parse_mode' => 'Markdown',
             ]);
