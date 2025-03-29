@@ -68,10 +68,7 @@ class StartCommand extends UserCommand
             ]);
         }
 
-
         DatabaseService::linkUserChat($user->getId(), $chat->getId());
-
-
 
         $keyboard = new InlineKeyboard(
             [
@@ -87,6 +84,10 @@ class StartCommand extends UserCommand
         ;
 
         $text = DatabaseService::getMessage('welcome_text');
+
+        $message = $this->getMessage();
+        $chatId  = $message->getChat()->getId();
+
         return Request::sendMessage([
             'chat_id'      => $chatId,
             'text'         => 'Hello, below you can get to know about us more',
