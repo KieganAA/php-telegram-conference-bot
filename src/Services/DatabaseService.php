@@ -119,20 +119,19 @@ class DatabaseService
         bool $is_premium = false,
     ): bool {
         $sql = "INSERT INTO `user` ( 
-                id, is_bot, first_name, last_name, username, 
-                language_code, is_premium, created_at, updated_at
-            )
-            ) VALUES (
-                :id, :is_bot, :first_name, :last_name, :username, 
-                :language_code, :is_premium, NOW(), NOW()
-            )
-            ON DUPLICATE KEY UPDATE
-                first_name = :first_name_update,
-                last_name = :last_name_update,
-                username = :username_update,
-                language_code = :language_code_update,
-                is_premium = :is_premium_update,
-                updated_at = NOW()";
+            id, is_bot, first_name, last_name, username, 
+            language_code, is_premium, created_at, updated_at
+        ) VALUES (
+            :id, :is_bot, :first_name, :last_name, :username, 
+            :language_code, :is_premium, NOW(), NOW()
+        )
+        ON DUPLICATE KEY UPDATE
+            first_name = :first_name_update,
+            last_name = :last_name_update,
+            username = :username_update,
+            language_code = :language_code_update,
+            is_premium = :is_premium_update,
+            updated_at = NOW()";
 
         $pdo = self::getInstance();
         $stmt = $pdo->prepare($sql);
@@ -146,7 +145,6 @@ class DatabaseService
             ':language_code' => $language_code,
             ':is_premium' => (int)$is_premium,
 
-            // Update parameters
             ':first_name_update' => $first_name,
             ':last_name_update' => $last_name,
             ':username_update' => $username,
