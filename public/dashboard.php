@@ -192,7 +192,6 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <tr>
         <th>ID</th>
         <th>Type</th>
-        <th>Title</th>
         <th>Username</th>
         <th>First Name</th>
         <th>Last Name</th>
@@ -313,7 +312,6 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         <th>User ID</th>
         <th>Chat ID</th>
         <th>User Name</th>
-        <th>Chat Title</th>
     </tr>
     </thead>
     <tbody>
