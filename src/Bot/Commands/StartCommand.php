@@ -91,14 +91,14 @@ class StartCommand extends UserCommand
 
             return Request::sendMessage([
                 'chat_id'      => $chatId,
-                'text'         => $textDB,
+                'text'         => $textDB ?? $text,
                 'reply_markup' => $keyboard,
                 'parse_mode'   => 'Markdown',
             ]);
         } catch (Exception $e) {
             return Request::sendMessage([
                 'chat_id'      => $chatId,
-                'text'         => $textDB,
+                'text'         => $textDB ?? $text,
                 'reply_markup' => $keyboard,
                 'parse_mode'   => 'Markdown',
             ]);
