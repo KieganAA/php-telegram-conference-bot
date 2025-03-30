@@ -94,9 +94,60 @@ $userChats = DatabaseService::getUserChatRelationships()
         .code-input { padding: 8px; width: 200px; }
         .action-button.mark-used { background-color: #ccffcc; }
         .action-button.mark-unused { background-color: #ffcccc; }
+        .nav-header {
+            background-color: #333;
+            padding: 1rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #4CAF50;
+        }
+
+        .nav-spacer {
+            height: 70px;
+        }
     </style>
 </head>
 <body>
+<?php
+$currentPage = basename($_SERVER['PHP_SELF']);
+?>
+
+<nav class="nav-header">
+    <ul class="nav-list">
+        <li>
+            <a href="dashboard.php" class="nav-link <?= $currentPage === 'dashboard.php' ? 'active' : '' ?>">
+                Dashboard
+            </a>
+        </li>
+        <li>
+            <a href="admin.php" class="nav-link <?= $currentPage === 'admin.php' ? 'active' : '' ?>">
+                Admin Panel
+            </a>
+        </li>
+    </ul>
+</nav>
+<div class="nav-spacer"></div>
 <h1>Database Center</h1>
 
 <!-- Users Table -->
