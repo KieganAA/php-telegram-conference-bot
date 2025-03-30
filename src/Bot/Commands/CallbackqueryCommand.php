@@ -41,7 +41,7 @@ class CallbackqueryCommand extends SystemCommand
             if (!empty($existingCodes)) {
                 $trackerInviteCode = $existingCodes[0]['code'];
                 $text = DatabaseService::getMessage('tracker_invite_code_exists')
-                    ?: "Your existing invite code:";
+                    ?: "Your already existing invite code:";
             } else {
                 $trackerInviteCode = DatabaseService::getUnusedInviteCode();
                 if (!$trackerInviteCode) {
@@ -75,7 +75,7 @@ class CallbackqueryCommand extends SystemCommand
             $keyboard = new InlineKeyboard([
                 [
                     'text' => 'Use Invite Code',
-                    'url' => 'https://app.aio.tech?invite_code=' . $trackerInviteCode
+                    'url' => 'https://app.aio.tech/auth/register?' . $trackerInviteCode
                 ]
             ]);
 
