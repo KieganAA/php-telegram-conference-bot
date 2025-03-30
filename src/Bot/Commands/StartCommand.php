@@ -42,18 +42,18 @@ class StartCommand extends UserCommand
         $textDB = DatabaseService::getMessage('welcome_text');
         $text = <<<TEXT
         Hey there!
-        *With the buttons below, you can:*
+        **With the buttons below, you can:**
         
-        🔑 **Get Free Tracker Access**
+        🔑 *Get Free Tracker Access*
         Receive your AIO invite code for instant registration
         
-        📞 **Connect with Us**
+        📞 *Connect with Us*
         Speak directly with our AIO Sales Manager to:
         • Learn about our unique solutions
         • Schedule a demo call
         • Get answers to all your questions
         
-        🌐 **Explore AIO Features**
+        🌐 *Explore AIO Features*
         Discover our full range of features through our official website
         TEXT;
 

@@ -40,7 +40,22 @@ class StartbroconfCommand extends UserCommand
         $user = $message->getFrom();
 
         $textDB = DatabaseService::getMessage('welcome_text');
-        $text = 'Hello, below you can get to know about us more';
+        $text = <<<TEXT
+        Hey there!
+        **With the buttons below, you can:**
+        
+        🔑 *Get Free Tracker Access*
+        Receive your AIO invite code for instant registration
+        
+        📞 *Connect with Us*
+        Speak directly with our AIO Sales Manager to:
+        • Learn about our unique solutions
+        • Schedule a demo call
+        • Get answers to all your questions
+        
+        🌐 *Explore AIO Features*
+        Discover our full range of features through our official website
+        TEXT;
 
         $keyboard = new InlineKeyboard(
             [
