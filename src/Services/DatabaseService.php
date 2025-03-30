@@ -335,4 +335,11 @@ class DatabaseService
             ':chat_id' => $chatId
         ]);
     }
+    public static function deleteInviteCode(string $code): bool
+    {
+        $sql = "DELETE FROM tracker_invite_codes WHERE code = :code";
+        $pdo = self::getInstance();
+        $stmt = $pdo->prepare($sql);
+        return $stmt->execute([':code' => $code]);
+    }
 }

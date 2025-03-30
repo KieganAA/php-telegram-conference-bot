@@ -36,11 +36,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                     break;
 
+                case 'delete_code':
+                    if (!empty($_POST['code'])) {
+                        DatabaseService::deleteInviteCode($_POST['code']);
+                    }
+                    break;
+
                 case 'mark_unused':
                     if (!empty($_POST['code'])) {
                         DatabaseService::revokeCode($_POST['code']);
                     }
                     break;
+
             }
         } catch (Exception $e) {
             $error = $e->getMessage();
@@ -218,16 +225,15 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 <!--    --><?php //endforeach; ?>
 <!--    </tbody>-->
 <!--</table>-->
-<!---->
-<!--<div class="code-controls">-->
-<!--    <h3>Add New Invite Code</h3>-->
-<!--    <form method="POST">-->
-<!--        <input type="hidden" name="action" value="add_code">-->
-<!--        <input class="code-input" type="text" name="new_code"-->
-<!--               placeholder="Enter new code" required>-->
-<!--        <button type="submit">Generate Code</button>-->
-<!--    </form>-->
-<!--</div>-->
+
+<div class="code-controls">
+    <h3>Add New Invite Code</h3>
+    <form method="POST">
+        <input type="hidden" name="action" value="add_code">
+        <input class="code-input" type="text" name="new_code"
+               placeholder="Enter new code" required>
+        <button type="submit">Generate Code</button>
+    </form>
 
 <!-- Invite Codes Table -->
 <h2>Invite Codes (Total: <?= count($inviteCodes) ?>, Available: <?= DatabaseService::getAvailableCodeCount() ?>)</h2>
@@ -239,6 +245,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         <th>Used By:</th>
         <th>Used At</th>
         <th>Created At</th>
+        <th>Actions</th>
     </tr>
     </thead>
     <tbody>
@@ -270,7 +277,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     <form class="action-form" method="POST">
                         <input type="hidden" name="action" value="mark_used">
                         <input type="hidden" name="code" value="<?= $code['code'] ?>">
-                        <select name="user_id" title="Select User">
+                        <select name="user_id" title="Select User" required>
                             <option value="">No User</option>
                             <?php foreach ($users as $user): ?>
                                 <option value="<?= $user['id'] ?>">
@@ -278,11 +285,11 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                                 </option>
                             <?php endforeach; ?>
                         </select>
-                        <select name="chat_id" title="Select Chat">
+                        <select name="chat_id" title="Select Chat" required>
                             <option value="">No Chat</option>
                             <?php foreach ($chats as $chat): ?>
                                 <option value="<?= $chat['id'] ?>">
-                                    <?= htmlspecialchars($chat['title'] ?: $chat['id']) ?>
+                                    <?= htmlspecialchars($chat['id']) ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
@@ -290,6 +297,13 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                                 style="background-color: #ccffcc;">
                             Mark Used
                         </button>
+                        <form class="action-form" method="POST"
+                              onsubmit="return confirm('Are you sure you want to permanently delete this code?');">
+                            <input type="hidden" name="action" value="delete_code">
+                            <input type="hidden" name="code" value="<?= $code['code'] ?>">
+                            <button type="submit" class="action-button" style="background-color: #ff0000; color: white;">
+                                Delete
+                            </button>
                     </form>
                 <?php endif; ?>
             </td>
@@ -320,6 +334,12 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 <!--</table>-->
 
 </body>
+
+<script>
+    function confirmDelete(code) {
+        return confirm(`Are you sure you want to delete code ${code}? This action cannot be undone!`);
+    }
+</script>
 
 <?php if (!empty($error)): ?>
     <div style="color: red; padding: 10px; border: 1px solid red; margin: 10px 0;">
