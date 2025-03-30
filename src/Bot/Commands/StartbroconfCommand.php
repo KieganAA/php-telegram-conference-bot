@@ -78,14 +78,14 @@ class StartbroconfCommand extends UserCommand
                 'chat_id'      => $chatId,
                 'text'         => $text,
                 'reply_markup' => $keyboard,
-                'parse_mode'   => 'HTML',
+                'parse_mode'   => 'Markdown',
             ]);
         } catch (Exception $e) {
             return Request::sendMessage([
                 'chat_id'      => $chatId,
                 'text'         => $text,
                 'reply_markup' => $keyboard,
-                'parse_mode'   => 'HTML',
+                'parse_mode'   => 'Markdown',
             ]);
         }
     }

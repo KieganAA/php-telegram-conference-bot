@@ -156,7 +156,6 @@ $userChats = DatabaseService::getUserChatRelationships()
         <tr>
             <td><?= htmlspecialchars($chat['id']) ?></td>
             <td><?= htmlspecialchars($chat['type']) ?></td>
-            <td><?= htmlspecialchars($chat['title']) ?></td>
             <td><?= htmlspecialchars($chat['username']) ?? '-' ?></td>
             <td><?= htmlspecialchars($chat['first_name']) ?? '-' ?></td>
             <td><?= htmlspecialchars($chat['last_name']) ?? '-' ?></td>
@@ -272,7 +271,6 @@ $userChats = DatabaseService::getUserChatRelationships()
             <td><?= htmlspecialchars($relation['user_id']) ?></td>
             <td><?= htmlspecialchars($relation['chat_id']) ?></td>
             <td><?= htmlspecialchars($relation['user_username']) ?? 'N/A' ?></td>
-            <td><?= htmlspecialchars($relation['chat_title']) ?? 'N/A' ?></td>
         </tr>
     <?php endforeach; ?>
     </tbody>
