@@ -75,7 +75,7 @@ class CallbackqueryCommand extends SystemCommand
             $keyboard = new InlineKeyboard([
                 [
                     'text' => 'Use Invite Code',
-                    'url' => 'https://app.aio.tech/auth/register?' . $trackerInviteCode
+                    'url' => 'https://app.aio.tech/auth/register?invite_code=' . $trackerInviteCode
                 ]
             ]);
 
