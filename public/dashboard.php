@@ -186,48 +186,48 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 </table>
 
 <!-- Chats Table -->
-<h2>Chats (<?= count($chats) ?>)</h2>
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Type</th>
-        <th>Username</th>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Is Forum</th>
-        <th>All Admins</th>
-        <th>Created</th>
-        <th>Updated</th>
-    </tr>
-    </thead>
-    <tbody>
-    <?php foreach ($chats as $chat): ?>
-        <tr>
-            <td><?= htmlspecialchars($chat['id']) ?></td>
-            <td><?= htmlspecialchars($chat['type']) ?></td>
-            <td><?= htmlspecialchars($chat['username']) ?? '-' ?></td>
-            <td><?= htmlspecialchars($chat['first_name']) ?? '-' ?></td>
-            <td><?= htmlspecialchars($chat['last_name']) ?? '-' ?></td>
-            <td><?= $chat['is_forum'] ? 'Yes' : 'No' ?></td>
-            <td><?= $chat['all_members_are_administrators'] ? 'Yes' : 'No' ?></td>
-            <td><?= $formatDate($chat['created_at']) ?></td>
-            <td><?= $formatDate($chat['updated_at']) ?></td>
-        </tr>
-    <?php endforeach; ?>
-    </tbody>
-</table>
 
-<div class="code-controls">
-    <h3>Add New Invite Code</h3>
-    <form method="POST">
-        <input type="hidden" name="action" value="add_code">
-        <input class="code-input" type="text" name="new_code"
-               placeholder="Enter new code" required>
-        <button type="submit">Generate Code</button>
-    </form>
-</div>
-
+<!--<h2>Chats (--><?php //= count($chats) ?><!--)</h2>-->
+<!--<table>-->
+<!--    <thead>-->
+<!--    <tr>-->
+<!--        <th>ID</th>-->
+<!--        <th>Type</th>-->
+<!--        <th>Username</th>-->
+<!--        <th>First Name</th>-->
+<!--        <th>Last Name</th>-->
+<!--        <th>Is Forum</th>-->
+<!--        <th>All Admins</th>-->
+<!--        <th>Created</th>-->
+<!--        <th>Updated</th>-->
+<!--    </tr>-->
+<!--    </thead>-->
+<!--    <tbody>-->
+<!--    --><?php //foreach ($chats as $chat): ?>
+<!--        <tr>-->
+<!--            <td>--><?php //= htmlspecialchars($chat['id']) ?><!--</td>-->
+<!--            <td>--><?php //= htmlspecialchars($chat['type']) ?><!--</td>-->
+<!--            <td>--><?php //= htmlspecialchars($chat['username']) ?? '-' ?><!--</td>-->
+<!--            <td>--><?php //= htmlspecialchars($chat['first_name']) ?? '-' ?><!--</td>-->
+<!--            <td>--><?php //= htmlspecialchars($chat['last_name']) ?? '-' ?><!--</td>-->
+<!--            <td>--><?php //= $chat['is_forum'] ? 'Yes' : 'No' ?><!--</td>-->
+<!--            <td>--><?php //= $chat['all_members_are_administrators'] ? 'Yes' : 'No' ?><!--</td>-->
+<!--            <td>--><?php //= $formatDate($chat['created_at']) ?><!--</td>-->
+<!--            <td>--><?php //= $formatDate($chat['updated_at']) ?><!--</td>-->
+<!--        </tr>-->
+<!--    --><?php //endforeach; ?>
+<!--    </tbody>-->
+<!--</table>-->
+<!---->
+<!--<div class="code-controls">-->
+<!--    <h3>Add New Invite Code</h3>-->
+<!--    <form method="POST">-->
+<!--        <input type="hidden" name="action" value="add_code">-->
+<!--        <input class="code-input" type="text" name="new_code"-->
+<!--               placeholder="Enter new code" required>-->
+<!--        <button type="submit">Generate Code</button>-->
+<!--    </form>-->
+<!--</div>-->
 
 <!-- Invite Codes Table -->
 <h2>Invite Codes (Total: <?= count($inviteCodes) ?>, Available: <?= DatabaseService::getAvailableCodeCount() ?>)</h2>
@@ -235,9 +235,8 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <thead>
     <tr>
         <th>Code</th>
-        <th>Used</th>
-        <th>User</th>
-        <th>Chat</th>
+        <th>Is Used?</th>
+        <th>Used By:</th>
         <th>Used At</th>
         <th>Created At</th>
     </tr>
@@ -253,11 +252,6 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             <td>
                 <?= $code['user_username']
                     ? htmlspecialchars($code['user_username']) . " ({$code['user_id']})"
-                    : '-' ?>
-            </td>
-            <td>
-                <?= $code['chat_username']
-                    ? htmlspecialchars($code['chat_username']) . " ({$code['chat_id']})"
                     : '-' ?>
             </td>
             <td><?= $code['used_at'] ?? '-' ?></td>
@@ -305,29 +299,32 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 </table>
 
 <!-- User-Chat Relationships Table -->
-<h2>User-Chat Relationships (<?= count($userChats) ?>)</h2>
-<table>
-    <thead>
-    <tr>
-        <th>User ID</th>
-        <th>Chat ID</th>
-        <th>User Name</th>
-    </tr>
-    </thead>
-    <tbody>
-    <?php foreach ($userChats as $relation): ?>
-        <tr>
-            <td><?= htmlspecialchars($relation['user_id']) ?></td>
-            <td><?= htmlspecialchars($relation['chat_id']) ?></td>
-            <td><?= htmlspecialchars($relation['user_username']) ?? 'N/A' ?></td>
-        </tr>
-    <?php endforeach; ?>
-    </tbody>
-</table>
+<!--<h2>User-Chat Relationships (--><?php //= count($userChats) ?><!--)</h2>-->
+<!--<table>-->
+<!--    <thead>-->
+<!--    <tr>-->
+<!--        <th>User ID</th>-->
+<!--        <th>Chat ID</th>-->
+<!--        <th>User Name</th>-->
+<!--    </tr>-->
+<!--    </thead>-->
+<!--    <tbody>-->
+<!--    --><?php //foreach ($userChats as $relation): ?>
+<!--        <tr>-->
+<!--            <td>--><?php //= htmlspecialchars($relation['user_id']) ?><!--</td>-->
+<!--            <td>--><?php //= htmlspecialchars($relation['chat_id']) ?><!--</td>-->
+<!--            <td>--><?php //= htmlspecialchars($relation['user_username']) ?? 'N/A' ?><!--</td>-->
+<!--        </tr>-->
+<!--    --><?php //endforeach; ?>
+<!--    </tbody>-->
+<!--</table>-->
+
 </body>
+
 <?php if (!empty($error)): ?>
     <div style="color: red; padding: 10px; border: 1px solid red; margin: 10px 0;">
         Error: <?= htmlspecialchars($error) ?>
     </div>
 <?php endif; ?>
+
 </html>
