@@ -244,13 +244,13 @@ class DatabaseService
         $stmt->execute([':code' => $code]);
         return (bool)$stmt->fetchColumn();
     }
-
     public static function getAllInviteCodesWithUsernames(): array
     {
         $sql = "SELECT tic.*, u.username AS user_username, c.username AS chat_username
-                FROM tracker_invite_codes tic
-                LEFT JOIN `user` u ON tic.user_id = u.id
-                LEFT JOIN chat c ON tic.chat_id = c.id";
+            FROM tracker_invite_codes tic
+            LEFT JOIN `user` u ON tic.user_id = u.id
+            LEFT JOIN chat c ON tic.chat_id = c.id
+            ORDER BY tic.created_at DESC";
         $pdo = self::getInstance();
         $stmt = $pdo->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
