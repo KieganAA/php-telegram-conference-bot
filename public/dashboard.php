@@ -68,7 +68,7 @@ $userChats = DatabaseService::getUserChatRelationships()
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Database Information</title>
+    <title>Dashboard</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -158,7 +158,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 <h1>Database Center</h1>
 
 <!-- Users Table -->
-<h2>Users (<?= count($users) ?>)</h2>
+<h2>Total User & Information (<?= count($users) ?>)</h2>
 <table>
     <thead>
     <tr>
@@ -236,7 +236,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     </form>
 
 <!-- Invite Codes Table -->
-<h2>Invite Codes (Total: <?= count($inviteCodes) ?>, Available: <?= DatabaseService::getAvailableCodeCount() ?>)</h2>
+<h2>Total Invite Codes & Information (Total: <?= count($inviteCodes) ?>, Available: <?= DatabaseService::getAvailableCodeCount() ?>)</h2>
     <table>
         <thead>
         <tr>
