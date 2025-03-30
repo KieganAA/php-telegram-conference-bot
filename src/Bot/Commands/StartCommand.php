@@ -39,7 +39,7 @@ class StartCommand extends UserCommand
         $chatId  = $message->getChat()->getId();
         $user = $message->getFrom();
 
-        $textDB = DatabaseService::getMessage('welcome_text');
+        $textDB = DatabaseService::getMessage('welcome_text_general');
         $text = <<<TEXT
         Hey there!
         **With the buttons below, you can:**
@@ -91,14 +91,14 @@ class StartCommand extends UserCommand
 
             return Request::sendMessage([
                 'chat_id'      => $chatId,
-                'text'         => $text,
+                'text'         => $textDB,
                 'reply_markup' => $keyboard,
                 'parse_mode'   => 'Markdown',
             ]);
         } catch (Exception $e) {
             return Request::sendMessage([
                 'chat_id'      => $chatId,
-                'text'         => $text,
+                'text'         => $textDB,
                 'reply_markup' => $keyboard,
                 'parse_mode'   => 'Markdown',
             ]);
