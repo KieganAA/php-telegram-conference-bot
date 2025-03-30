@@ -237,80 +237,82 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 
 <!-- Invite Codes Table -->
 <h2>Invite Codes (Total: <?= count($inviteCodes) ?>, Available: <?= DatabaseService::getAvailableCodeCount() ?>)</h2>
-<table>
-    <thead>
-    <tr>
-        <th>Code</th>
-        <th>Is Used?</th>
-        <th>Used By:</th>
-        <th>Used At</th>
-        <th>Created At</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <?php if (empty($inviteCodes)): ?>
-        <tr><td colspan="7">No invite codes found</td></tr>
-    <?php endif; ?>
-    <?php foreach ($inviteCodes as $code): ?>
+    <table>
+        <thead>
         <tr>
-            <td><?= htmlspecialchars($code['code']) ?></td>
-            <td><?= $code['used'] ? 'Yes' : 'No' ?></td>
-            <td>
-                <?= $code['user_username']
-                    ? htmlspecialchars($code['user_username']) . " ({$code['user_id']})"
-                    : '-' ?>
-            </td>
-            <td><?= $code['used_at'] ?? '-' ?></td>
-            <td><?= $formatDate($code['created_at']) ?></td>
-            <td>
-                <?php if ($code['used']): ?>
-                    <form class="action-form" method="POST">
-                        <input type="hidden" name="action" value="mark_unused">
-                        <input type="hidden" name="code" value="<?= $code['code'] ?>">
-                        <button type="submit" class="action-button"
-                                style="background-color: #ffcccc;">
-                            Mark Unused
-                        </button>
-                    </form>
-                <?php else: ?>
-                    <form class="action-form" method="POST">
-                        <input type="hidden" name="action" value="mark_used">
-                        <input type="hidden" name="code" value="<?= $code['code'] ?>">
-                        <select name="user_id" title="Select User" required>
-                            <option value="">No User</option>
-                            <?php foreach ($users as $user): ?>
-                                <option value="<?= $user['id'] ?>">
-                                    <?= htmlspecialchars($user['username'] ?: $user['id']) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                        <select name="chat_id" title="Select Chat" required>
-                            <option value="">No Chat</option>
-                            <?php foreach ($chats as $chat): ?>
-                                <option value="<?= $chat['id'] ?>">
-                                    <?= htmlspecialchars($chat['id']) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                        <button type="submit" class="action-button"
-                                style="background-color: #ccffcc;">
-                            Mark Used
-                        </button>
-                        <form class="action-form" method="POST"
-                              onsubmit="return confirm('Are you sure you want to permanently delete this code?');">
-                            <input type="hidden" name="action" value="delete_code">
-                            <input type="hidden" name="code" value="<?= $code['code'] ?>">
-                            <button type="submit" class="action-button" style="background-color: #ff0000; color: white;">
-                                Delete
-                            </button>
-                    </form>
-                <?php endif; ?>
-            </td>
+            <th>Code</th>
+            <th>Is Used?</th>
+            <th>Used By:</th>
+            <th>Used At</th>
+            <th>Created At</th>
+            <th>Actions</th>
         </tr>
-    <?php endforeach; ?>
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        <?php if (empty($inviteCodes)): ?>
+            <tr><td colspan="6">No invite codes found</td></tr>
+        <?php endif; ?>
+        <?php foreach ($inviteCodes as $code): ?>
+            <tr>
+                <td><?= htmlspecialchars($code['code']) ?></td>
+                <td><?= $code['used'] ? 'Yes' : 'No' ?></td>
+                <td>
+                    <?= $code['user_username']
+                        ? htmlspecialchars($code['user_username']) . " ({$code['user_id']})"
+                        : '-' ?>
+                </td>
+                <td><?= $code['used_at'] ?? '-' ?></td>
+                <td><?= $formatDate($code['created_at']) ?></td>
+                <td>
+                    <?php if ($code['used']): ?>
+                        <form class="action-form" method="POST">
+                            <input type="hidden" name="action" value="mark_unused">
+                            <input type="hidden" name="code" value="<?= $code['code'] ?>">
+                            <button type="submit" class="action-button" style="background-color: #ffcccc;">
+                                Mark Unused
+                            </button>
+                        </form>
+                    <?php else: ?>
+                        <form class="action-form" method="POST">
+                            <input type="hidden" name="action" value="mark_used">
+                            <input type="hidden" name="code" value="<?= $code['code'] ?>">
+                            <select name="user_id" title="Select User" required>
+                                <option value="">No User</option>
+                                <?php foreach ($users as $user): ?>
+                                    <option value="<?= $user['id'] ?>">
+                                        <?= htmlspecialchars($user['username'] ?: $user['id']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <select name="chat_id" title="Select Chat" required>
+                                <option value="">No Chat</option>
+                                <?php foreach ($chats as $chat): ?>
+                                    <option value="<?= $chat['id'] ?>">
+                                        <?= htmlspecialchars($chat['id']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <button type="submit" class="action-button" style="background-color: #ccffcc;">
+                                Mark Used
+                            </button>
+                        </form>
+                    <?php endif; ?>
+
+                    <!-- Delete button for all codes -->
+                    <form class="action-form" method="POST"
+                          onsubmit="return confirm('Permanently delete <?= htmlspecialchars($code['code']) ?>?')">
+                        <input type="hidden" name="action" value="delete_code">
+                        <input type="hidden" name="code" value="<?= $code['code'] ?>">
+                        <button type="submit" class="action-button"
+                                style="background-color: #ff4444; color: white; margin-top: 5px;">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
 
 <!-- User-Chat Relationships Table -->
 <!--<h2>User-Chat Relationships (--><?php //= count($userChats) ?><!--)</h2>-->
