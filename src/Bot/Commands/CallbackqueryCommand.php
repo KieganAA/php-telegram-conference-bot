@@ -11,7 +11,6 @@ use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 use Longman\TelegramBot\Entities\CallbackQuery;
-use RuntimeException;
 
 /**
  * Class CallbackqueryCommand
@@ -33,34 +32,62 @@ class CallbackqueryCommand extends SystemCommand
         $callbackQuery = $this->getCallbackQuery();
         $callbackData  = $callbackQuery->getData();
         $chatId        = $callbackQuery->getMessage()->getChat()->getId();
-        $messageId     = $callbackQuery->getMessage()->getMessageId();
         $userId        = $callbackQuery->getFrom()->getId();
+        $messageId     = $callbackQuery->getMessage()->getMessageId();
 
         if ($callbackData === 'tracker_invite_code') {
-            Request::answerCallbackQuery([
-                'callback_query_id' => $callbackQuery->getId(),
-                'show_alert'        => false,
+            $existingCodes = DatabaseService::getCodesByUser($userId);
+
+            if (!empty($existingCodes)) {
+                $trackerInviteCode = $existingCodes[0]['code'];
+                $text = DatabaseService::getMessage('tracker_invite_code_exists')
+                    ?: "Your existing invite code:";
+            } else {
+                $trackerInviteCode = DatabaseService::getUnusedInviteCode();
+                if (!$trackerInviteCode) {
+                    Request::answerCallbackQuery([
+                        'callback_query_id' => $callbackQuery->getId(),
+                        'text' => 'All invite codes have been claimed!',
+                        'show_alert' => true,
+                    ]);
+                    return Request::emptyResponse();
+                }
+
+                $success = DatabaseService::markCodeAsUsed(
+                    $trackerInviteCode,
+                    $userId,
+                    $chatId
+                );
+
+                if (!$success) {
+                    Request::answerCallbackQuery([
+                        'callback_query_id' => $callbackQuery->getId(),
+                        'text' => 'Error claiming code, please try again',
+                        'show_alert' => true,
+                    ]);
+                    return Request::emptyResponse();
+                }
+
+                $text = DatabaseService::getMessage('tracker_invite_code_success')
+                    ?: "Your exclusive invite code:";
+            }
+
+            $keyboard = new InlineKeyboard([
+                [
+                    'text' => 'Use Invite Code',
+                    'url' => 'https://app.aio.tech?invite_code=' . $trackerInviteCode
+                ]
             ]);
 
-            $text = DatabaseService::getMessage('tracker_invite_code');
-            $trackerInviteCode = 'Debug';
-
-            $keyboard = new InlineKeyboard(
-                [
-                    ['text' => 'Get Tracker Invite Code', 'url' => 'https://app.aio.tech?invite_code=' . $trackerInviteCode],
-                ]
-            )
-            ;
-
-
-            return Request::sendMessage([
+            return Request::editMessageText([
                 'chat_id'      => $chatId,
-                'text'         => 'Sample Invite code, click  button below',
+                'message_id'   => $messageId,
+                'text'         => $text . PHP_EOL . "<code>$trackerInviteCode</code>",
                 'reply_markup' => $keyboard,
-                'parse_mode' => 'HTML',
+                'parse_mode'   => 'HTML'
             ]);
         }
 
         return Request::emptyResponse();
-        }
+    }
 }

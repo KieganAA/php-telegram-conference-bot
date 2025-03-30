@@ -10,9 +10,6 @@ use Longman\TelegramBot\Entities\ServerResponse;
 use Longman\TelegramBot\Entities\Update;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
-use App\Utils\Helpers;
-use RuntimeException;
-
 class GenericmessageCommand extends SystemCommand
 {
     protected $name = 'genericmessage';
@@ -25,17 +22,6 @@ class GenericmessageCommand extends SystemCommand
      */
     public function execute(): ServerResponse
     {
-        $message = $this->getMessage();
-        $chatId = $message->getChat()->getId();
-
-        if ($message->getText(true) == 'No') {
-            Request::sendMessage([
-                'chat_id' => $chatId,
-                'text' => 'Yes',
-                'reply_markup' => Keyboard::remove(),
-                'parse_mode' => 'Markdown',
-            ]);
-        }
         return Request::emptyResponse();
     }
 }

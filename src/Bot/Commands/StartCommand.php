@@ -3,14 +3,12 @@
 namespace App\Bot\Commands;
 
 use App\Services\DatabaseService;
-use Dflydev\DotAccessData\Data;
 use Exception;
 use Longman\TelegramBot\Commands\UserCommand;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 use Longman\TelegramBot\Entities\ServerResponse;
-use RuntimeException;
 
 /**
  * Class StartCommand
@@ -32,14 +30,44 @@ class StartCommand extends UserCommand
      */
     public function execute(): ServerResponse
     {
-
         // TODO Make separate integrations for en and ru Telegram language
         // TODO Make separate admin dashboard for en/ru translations
         // TODO Make separate dashboard for TG contacts on conference
 
         $message = $this->getMessage();
         $chat = $message->getChat();
+        $chatId  = $message->getChat()->getId();
         $user = $message->getFrom();
+
+        $textDB = DatabaseService::getMessage('welcome_text');
+        $text = <<<TEXT
+        Hey there!
+        *With the buttons below, you can:*
+        
+        🔑 **Get Free Tracker Access**
+        Receive your AIO invite code for instant registration
+        
+        📞 **Connect with Us**
+        Speak directly with our AIO Sales Manager to:
+        • Learn about our unique solutions
+        • Schedule a demo call
+        • Get answers to all your questions
+        
+        🌐 **Explore AIO Features**
+        Discover our full range of features through our official website
+        TEXT;
+
+        $keyboard = new InlineKeyboard(
+            [
+                ['text' => 'Get Tracker Invite Code', 'callback_data' => 'tracker_invite_code'],
+            ],
+            [
+                ['text' => 'Contact AIO Sales Manager', 'url' => 'https://t.me/aio_presale'],
+            ],
+            [
+                ['text' => 'Our Features', 'url' => 'https://aio.tech/features'],
+            ],
+        );
 
         try {
             DatabaseService::saveUser(
@@ -58,41 +86,22 @@ class StartCommand extends UserCommand
                 $chat->getFirstName(),
                 $chat->getLastName()
             );
-        } catch (Exception $e) {
-            $message = $this->getMessage();
-            $chatId  = $message->getChat()->getId();
+
+            DatabaseService::linkUserChat($user->getId(), $chat->getId());
+
             return Request::sendMessage([
                 'chat_id'      => $chatId,
-                'text'         => 'DEBUG MODE, CURRENT EXCEPTION' . $e->getMessage(),
+                'text'         => $text,
+                'reply_markup' => $keyboard,
+                'parse_mode'   => 'HTML',
+            ]);
+        } catch (Exception $e) {
+            return Request::sendMessage([
+                'chat_id'      => $chatId,
+                'text'         => $text,
+                'reply_markup' => $keyboard,
                 'parse_mode'   => 'HTML',
             ]);
         }
-
-        DatabaseService::linkUserChat($user->getId(), $chat->getId());
-
-        $keyboard = new InlineKeyboard(
-            [
-                ['text' => 'Get Tracker Invite Code', 'callback_data' => 'tracker_invite_code'],
-            ],
-            [
-                ['text' => 'Contact AIO Sales Manager', 'url' => 'https://t.me/aio_presale'],
-            ],
-            [
-                ['text' => 'Our Features', 'url' => 'https://aio.tech/features'],
-            ],
-        )
-        ;
-
-        $text = DatabaseService::getMessage('welcome_text');
-
-        $message = $this->getMessage();
-        $chatId  = $message->getChat()->getId();
-
-        return Request::sendMessage([
-            'chat_id'      => $chatId,
-            'text'         => 'Hello, below you can get to know about us more',
-            'reply_markup' => $keyboard,
-            'parse_mode'   => 'HTML',
-        ]);
     }
 }

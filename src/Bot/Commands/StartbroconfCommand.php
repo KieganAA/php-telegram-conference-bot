@@ -3,14 +3,12 @@
 namespace App\Bot\Commands;
 
 use App\Services\DatabaseService;
-use Dflydev\DotAccessData\Data;
 use Exception;
 use Longman\TelegramBot\Commands\UserCommand;
 use Longman\TelegramBot\Entities\InlineKeyboard;
 use Longman\TelegramBot\Exception\TelegramException;
 use Longman\TelegramBot\Request;
 use Longman\TelegramBot\Entities\ServerResponse;
-use RuntimeException;
 
 /**
  * Class StartCommand
@@ -32,37 +30,63 @@ class StartbroconfCommand extends UserCommand
      */
     public function execute(): ServerResponse
     {
-
         // TODO Make separate integrations for en and ru Telegram language
         // TODO Make separate admin dashboard for en/ru translations
         // TODO Make separate dashboard for TG contacts on conference
 
         $message = $this->getMessage();
+        $chat = $message->getChat();
         $chatId  = $message->getChat()->getId();
-        $username  = $message->getFrom()->getUsername();
-        $fullname = $message->getFrom()->getFirstName() . ' ' . $message->getFrom()->getLastName();
-        $timestamp = date('Y-m-d H:i:s');
-        $languageCode  = $message->getFrom()->getLanguageCode();
+        $user = $message->getFrom();
+
+        $textDB = DatabaseService::getMessage('welcome_text');
+        $text = 'Hello, below you can get to know about us more';
 
         $keyboard = new InlineKeyboard(
+            [
+                ['text' => 'Get Tracker Invite Code', 'callback_data' => 'tracker_invite_code'],
+            ],
             [
                 ['text' => 'Contact AIO Sales Manager', 'url' => 'https://t.me/aio_presale'],
             ],
             [
-                ['text' => 'Check AIO Official Website', 'url' => 'https://aio.tech'],
+                ['text' => 'Our Features', 'url' => 'https://aio.tech/features'],
             ],
-            [
-                ['text' => 'View Additional Info', 'callback_data' => 'additional_info'],
-            ],
-        )
-        ;
+        );
 
-        $text = DatabaseService::getMessage('welcome_text');
-        return Request::sendMessage([
-            'chat_id'      => $chatId,
-            'text'         => 'Hey BroConf',
-            'reply_markup' => $keyboard,
-            'parse_mode'   => 'HTML',
-        ]);
+        try {
+            DatabaseService::saveUser(
+                $user->getId(),
+                $user->getIsBot(),
+                $user->getFirstName(),
+                $user->getLastName(),
+                $user->getUsername(),
+                $user->getLanguageCode(),
+                $user->getIsPremium(),
+            );
+
+            DatabaseService::saveChat(
+                $chat->getId(),
+                $chat->getUsername(),
+                $chat->getFirstName(),
+                $chat->getLastName()
+            );
+
+            DatabaseService::linkUserChat($user->getId(), $chat->getId());
+
+            return Request::sendMessage([
+                'chat_id'      => $chatId,
+                'text'         => $text,
+                'reply_markup' => $keyboard,
+                'parse_mode'   => 'HTML',
+            ]);
+        } catch (Exception $e) {
+            return Request::sendMessage([
+                'chat_id'      => $chatId,
+                'text'         => $text,
+                'reply_markup' => $keyboard,
+                'parse_mode'   => 'HTML',
+            ]);
+        }
     }
 }
