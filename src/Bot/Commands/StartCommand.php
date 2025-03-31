@@ -77,7 +77,6 @@ class StartCommand extends UserCommand
                 $user->getLastName(),
                 $user->getUsername(),
                 $user->getLanguageCode(),
-                $user->getIsPremium(),
             );
 
             DatabaseService::saveChat(

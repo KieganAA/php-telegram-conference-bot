@@ -168,7 +168,6 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         <th>Last Name</th>
         <th>Username</th>
         <th>Language</th>
-        <th>Premium</th>
         <th>Added to Menu</th>
         <th>Created</th>
         <th>Updated</th>
@@ -183,7 +182,6 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             <td><?= ($user['last_name']) ?? '-' ?></td>
             <td><?= htmlspecialchars($user['username']) ?? '-' ?></td>
             <td><?= htmlspecialchars($user['language_code']) ?? '-' ?></td>
-            <td><?= $user['is_premium'] ? 'Yes' : 'No' ?></td>
             <td><?= $user['added_to_attachment_menu'] ? 'Yes' : 'No' ?></td>
             <td><?= $formatDate($user['created_at']) ?></td>
             <td><?= $formatDate($user['updated_at']) ?></td>
