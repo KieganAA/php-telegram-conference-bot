@@ -176,12 +176,12 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <tbody>
     <?php foreach ($users as $user): ?>
         <tr>
-            <td><?= htmlspecialchars($user['id']) ?></td>
+            <td><?= ($user['id']) ?></td>
             <td><?= $user['is_bot'] ? 'Yes' : 'No' ?></td>
             <td><?= htmlspecialchars($user['first_name']) ?></td>
             <td><?= ($user['last_name']) ?? '-' ?></td>
-            <td><?= htmlspecialchars($user['username']) ?? '-' ?></td>
-            <td><?= htmlspecialchars($user['language_code']) ?? '-' ?></td>
+            <td><?= ($user['username']) ?? '-' ?></td>
+            <td><?= ($user['language_code']) ?? '-' ?></td>
             <td><?= $user['added_to_attachment_menu'] ? 'Yes' : 'No' ?></td>
             <td><?= $formatDate($user['created_at']) ?></td>
             <td><?= $formatDate($user['updated_at']) ?></td>
