@@ -40,7 +40,7 @@ class StartbannererevanCommand extends UserCommand
         $chatId  = $message->getChat()->getId();
         $user = $message->getFrom();
 
-        $textDB = DatabaseService::getMessage('welcome_text_style');
+        $textDB = DatabaseService::getMessage('welcome_text_erevan');
         $text = <<<TEXT
         Hey there!
         **With the buttons below, you can:**
