@@ -36,41 +36,43 @@ class CallbackqueryCommand extends SystemCommand
         $messageId     = $callbackQuery->getMessage()->getMessageId();
 
         if ($callbackData === 'tracker_invite_code') {
-            $existingCodes = DatabaseService::getCodesByUser($userId);
-
-            if (!empty($existingCodes)) {
-                $trackerInviteCode = $existingCodes[0]['code'];
-                $text = DatabaseService::getMessage('tracker_invite_code_exists')
-                    ?: "Your already existing invite code:";
-            } else {
-                $trackerInviteCode = DatabaseService::getUnusedInviteCode();
-                if (!$trackerInviteCode) {
-                    Request::answerCallbackQuery([
-                        'callback_query_id' => $callbackQuery->getId(),
-                        'text' => 'All invite codes have been claimed!',
-                        'show_alert' => true,
-                    ]);
-                    return Request::emptyResponse();
-                }
-
-                $success = DatabaseService::markCodeAsUsed(
-                    $trackerInviteCode,
-                    $userId,
-                    $chatId
-                );
-
-                if (!$success) {
-                    Request::answerCallbackQuery([
-                        'callback_query_id' => $callbackQuery->getId(),
-                        'text' => 'Error claiming code, please try again',
-                        'show_alert' => true,
-                    ]);
-                    return Request::emptyResponse();
-                }
-
-                $text = DatabaseService::getMessage('tracker_invite_code_success')
-                    ?: "Your exclusive invite code:";
-            }
+//            $existingCodes = DatabaseService::getCodesByUser($userId);
+//
+//            if (!empty($existingCodes)) {
+//                $trackerInviteCode = $existingCodes[0]['code'];
+//                $text = DatabaseService::getMessage('tracker_invite_code_exists')
+//                    ?: "Your already existing invite code:";
+//            } else {
+//                $trackerInviteCode = DatabaseService::getUnusedInviteCode();
+//                if (!$trackerInviteCode) {
+//                    Request::answerCallbackQuery([
+//                        'callback_query_id' => $callbackQuery->getId(),
+//                        'text' => 'All invite codes have been claimed!',
+//                        'show_alert' => true,
+//                    ]);
+//                    return Request::emptyResponse();
+//                }
+//
+//                $success = DatabaseService::markCodeAsUsed(
+//                    $trackerInviteCode,
+//                    $userId,
+//                    $chatId
+//                );
+//
+//                if (!$success) {
+//                    Request::answerCallbackQuery([
+//                        'callback_query_id' => $callbackQuery->getId(),
+//                        'text' => 'Error claiming code, please try again',
+//                        'show_alert' => true,
+//                    ]);
+//                    return Request::emptyResponse();
+//                }
+//
+//                $text = DatabaseService::getMessage('tracker_invite_code_success')
+//                    ?: "Your exclusive invite code:";
+//            }
+            $trackerInviteCode = '4149';
+            $text = 'Your exclusive invite code:';
 
             $keyboard = new InlineKeyboard([
                 [
