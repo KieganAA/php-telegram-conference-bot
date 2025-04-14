@@ -164,6 +164,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <tr>
         <th>ID</th>
         <th>Bot</th>
+        <th>Link Label</th>
         <th>First Name</th>
         <th>Last Name</th>
         <th>Username</th>
