@@ -30,49 +30,50 @@ class CallbackqueryCommand extends SystemCommand
     public function execute(): ServerResponse
     {
         $callbackQuery = $this->getCallbackQuery();
-        $callbackData  = $callbackQuery->getData();
-        $chatId        = $callbackQuery->getMessage()->getChat()->getId();
-        $userId        = $callbackQuery->getFrom()->getId();
-        $messageId     = $callbackQuery->getMessage()->getMessageId();
+        $callbackData = $callbackQuery->getData();
+        $chatId = $callbackQuery->getMessage()->getChat()->getId();
+        $userId = $callbackQuery->getFrom()->getId();
+        $messageId = $callbackQuery->getMessage()->getMessageId();
 
         if ($callbackData === 'tracker_invite_code') {
-//            $existingCodes = DatabaseService::getCodesByUser($userId);
-//
-//            if (!empty($existingCodes)) {
-//                $trackerInviteCode = $existingCodes[0]['code'];
-//                $text = DatabaseService::getMessage('tracker_invite_code_exists')
-//                    ?: "Your already existing invite code:";
-//            } else {
-//                $trackerInviteCode = DatabaseService::getUnusedInviteCode();
-//                if (!$trackerInviteCode) {
-//                    Request::answerCallbackQuery([
-//                        'callback_query_id' => $callbackQuery->getId(),
-//                        'text' => 'All invite codes have been claimed!',
-//                        'show_alert' => true,
-//                    ]);
-//                    return Request::emptyResponse();
-//                }
-//
+            $existingCodes = DatabaseService::getCodesByUser($userId);
+
+            if (!empty($existingCodes)) {
+                $trackerInviteCode = $existingCodes[0]['code'];
+                $text = DatabaseService::getMessage('tracker_invite_code_exists')
+                    ?: "Your already existing invite code:";
+            } else {
+                //$trackerInviteCode = DatabaseService::getUnusedInviteCode();
+                $trackerInviteCode = '4149';
+
+                if (!$trackerInviteCode) {
+                    Request::answerCallbackQuery([
+                        'callback_query_id' => $callbackQuery->getId(),
+                        'text' => 'All invite codes have been claimed!',
+                        'show_alert' => true,
+                    ]);
+                    return Request::emptyResponse();
+                }
+
 //                $success = DatabaseService::markCodeAsUsed(
 //                    $trackerInviteCode,
 //                    $userId,
 //                    $chatId
 //                );
-//
-//                if (!$success) {
-//                    Request::answerCallbackQuery([
-//                        'callback_query_id' => $callbackQuery->getId(),
-//                        'text' => 'Error claiming code, please try again',
-//                        'show_alert' => true,
-//                    ]);
-//                    return Request::emptyResponse();
-//                }
-//
-//                $text = DatabaseService::getMessage('tracker_invite_code_success')
-//                    ?: "Your exclusive invite code:";
-//            }
-            $trackerInviteCode = '4149';
-            $text = 'Your exclusive invite code:';
+                $success = true;
+
+                if (!$success) {
+                    Request::answerCallbackQuery([
+                        'callback_query_id' => $callbackQuery->getId(),
+                        'text' => 'Error claiming code, please try again',
+                        'show_alert' => true,
+                    ]);
+                    return Request::emptyResponse();
+                }
+
+                $text = DatabaseService::getMessage('tracker_invite_code_success')
+                    ?: "Your exclusive invite code:";
+            }
 
             $keyboard = new InlineKeyboard([
                 [
@@ -82,11 +83,11 @@ class CallbackqueryCommand extends SystemCommand
             ]);
 
             return Request::editMessageText([
-                'chat_id'      => $chatId,
-                'message_id'   => $messageId,
-                'text'         => $text . PHP_EOL . "<code>$trackerInviteCode</code>",
+                'chat_id' => $chatId,
+                'message_id' => $messageId,
+                'text' => $text . PHP_EOL . "<code>$trackerInviteCode</code>",
                 'reply_markup' => $keyboard,
-                'parse_mode'   => 'HTML'
+                'parse_mode' => 'HTML'
             ]);
         }
 
