@@ -78,6 +78,7 @@ class StartstyleCommand extends UserCommand
                 $user->getLastName(),
                 $user->getUsername(),
                 $user->getLanguageCode(),
+                'Style'
             );
 
             DatabaseService::saveChat(

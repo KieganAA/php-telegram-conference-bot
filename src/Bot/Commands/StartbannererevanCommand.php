@@ -78,6 +78,7 @@ class StartbannererevanCommand extends UserCommand
                 $user->getLastName(),
                 $user->getUsername(),
                 $user->getLanguageCode(),
+                'BannerErevan'
             );
 
             DatabaseService::saveChat(

@@ -116,13 +116,14 @@ class DatabaseService
         string $last_name = null,
         string $username = null,
         string $language_code = null,
+        string $link_label = null,
     ): bool {
         $sql = "INSERT INTO `user` ( 
             id, is_bot, first_name, last_name, username, 
-            language_code, created_at, updated_at
+            language_code, created_at, updated_at, link_label
         ) VALUES (
             :id, :is_bot, :first_name, :last_name, :username, 
-            :language_code, NOW(), NOW()
+            :language_code, NOW(), NOW(), :link_label
         )
         ON DUPLICATE KEY UPDATE
             first_name = :first_name_update,
@@ -141,6 +142,7 @@ class DatabaseService
             ':last_name' => $last_name,
             ':username' => $username,
             ':language_code' => $language_code,
+            ':link_label' => $link_label,
 
             ':first_name_update' => $first_name,
             ':last_name_update' => $last_name,

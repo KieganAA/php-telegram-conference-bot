@@ -178,6 +178,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         <tr>
             <td><?= ($user['id']) ?></td>
             <td><?= $user['is_bot'] ? 'Yes' : 'No' ?></td>
+            <td><?= $user['link_label'] ?? '-'  ?></td>
             <td><?= htmlspecialchars($user['first_name']) ?></td>
             <td><?= ($user['last_name']) ?? '-' ?></td>
             <td><?= ($user['username']) ?? '-' ?></td>

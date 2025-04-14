@@ -77,6 +77,7 @@ class StartbroconfCommand extends UserCommand
                 $user->getLastName(),
                 $user->getUsername(),
                 $user->getLanguageCode(),
+                'BroConf'
             );
 
             DatabaseService::saveChat(
