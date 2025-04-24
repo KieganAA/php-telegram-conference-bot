@@ -57,45 +57,157 @@ $userChats = DatabaseService::getUserChatRelationships()
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <style>
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --background-color: #f8f9fa;
+            --text-color: #212529;
+            --border-color: #dee2e6;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            margin: 0;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            line-height: 1.6;
         }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h1, h2, h3 {
+            color: var(--text-color);
+            margin: 2rem 0 1rem;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+
         h2 {
-            color: #333;
-            border-bottom: 2px solid #666;
-            padding-bottom: 5px;
+            font-size: 1.8rem;
+            color: var(--primary-color);
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
+            margin: 1.5rem 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
+
         th, td {
-            padding: 12px;
+            padding: 1rem;
             text-align: left;
-            border: 1px solid #ddd;
+            border-bottom: 1px solid var(--border-color);
         }
+
         th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+        }
+
+        tr:nth-child(even) {
             background-color: #f8f9fa;
         }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
+
+        tr:hover {
+            background-color: #f1f3f5;
         }
-        .action-form { display: inline-block; margin: 2px; }
-        .action-button { padding: 4px 8px; cursor: pointer; }
-        .code-controls { margin: 20px 0; }
-        .code-input { padding: 8px; width: 200px; }
-        .action-button.mark-used { background-color: #ccffcc; }
-        .action-button.mark-unused { background-color: #ffcccc; }
-        .nav-header {
-            background-color: #333;
+
+        .code-controls {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .code-input {
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .code-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+        }
+
+        button[type="submit"] {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #357abd;
+        }
+
+        .danger-button {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .danger-button:hover {
+            background-color: #bb2d3b;
+        }
+
+        .alert {
             padding: 1rem;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
+            border-radius: 4px;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .nav-header {
+            background-color: var(--primary-color);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .nav-list {
@@ -107,18 +219,45 @@ $userChats = DatabaseService::getUserChatRelationships()
         }
 
         .nav-link {
-            color: white;
+            color: rgba(255,255,255,0.9);
             text-decoration: none;
-            font-weight: bold;
-            transition: color 0.3s ease;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
         }
 
         .nav-link:hover {
-            color: #4CAF50;
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .nav-link.active {
+            background-color: rgba(255,255,255,0.2);
         }
 
         .nav-spacer {
             height: 70px;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .form-group {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -150,13 +289,11 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <thead>
     <tr>
         <th>ID</th>
-        <th>Bot</th>
         <th>Link Label</th>
         <th>First Name</th>
         <th>Last Name</th>
         <th>Username</th>
         <th>Language</th>
-        <th>Added to Menu</th>
         <th>Created</th>
         <th>Updated</th>
     </tr>
@@ -165,53 +302,17 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <?php foreach ($users as $user): ?>
         <tr>
             <td><?= ($user['id']) ?></td>
-            <td><?= $user['is_bot'] ? 'Yes' : 'No' ?></td>
             <td><?= $user['link_label'] ?? '-'  ?></td>
             <td><?= htmlspecialchars($user['first_name']) ?></td>
             <td><?= ($user['last_name']) ?? '-' ?></td>
             <td><?= ($user['username']) ?? '-' ?></td>
             <td><?= ($user['language_code']) ?? '-' ?></td>
-            <td><?= $user['added_to_attachment_menu'] ? 'Yes' : 'No' ?></td>
             <td><?= $formatDate($user['created_at']) ?></td>
             <td><?= $formatDate($user['updated_at']) ?></td>
         </tr>
     <?php endforeach; ?>
     </tbody>
 </table>
-
-<!-- Chats Table -->
-
-<!--<h2>Chats (--><?php //= count($chats) ?><!--)</h2>-->
-<!--<table>-->
-<!--    <thead>-->
-<!--    <tr>-->
-<!--        <th>ID</th>-->
-<!--        <th>Type</th>-->
-<!--        <th>Username</th>-->
-<!--        <th>First Name</th>-->
-<!--        <th>Last Name</th>-->
-<!--        <th>Is Forum</th>-->
-<!--        <th>All Admins</th>-->
-<!--        <th>Created</th>-->
-<!--        <th>Updated</th>-->
-<!--    </tr>-->
-<!--    </thead>-->
-<!--    <tbody>-->
-<!--    --><?php //foreach ($chats as $chat): ?>
-<!--        <tr>-->
-<!--            <td>--><?php //= htmlspecialchars($chat['id']) ?><!--</td>-->
-<!--            <td>--><?php //= htmlspecialchars($chat['type']) ?><!--</td>-->
-<!--            <td>--><?php //= htmlspecialchars($chat['username']) ?? '-' ?><!--</td>-->
-<!--            <td>--><?php //= htmlspecialchars($chat['first_name']) ?? '-' ?><!--</td>-->
-<!--            <td>--><?php //= htmlspecialchars($chat['last_name']) ?? '-' ?><!--</td>-->
-<!--            <td>--><?php //= $chat['is_forum'] ? 'Yes' : 'No' ?><!--</td>-->
-<!--            <td>--><?php //= $chat['all_members_are_administrators'] ? 'Yes' : 'No' ?><!--</td>-->
-<!--            <td>--><?php //= $formatDate($chat['created_at']) ?><!--</td>-->
-<!--            <td>--><?php //= $formatDate($chat['updated_at']) ?><!--</td>-->
-<!--        </tr>-->
-<!--    --><?php //endforeach; ?>
-<!--    </tbody>-->
-<!--</table>-->
 
 <div class="code-controls">
     <h3>Add New Invite Code</h3>
@@ -254,27 +355,6 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <?php endforeach; ?>
     </tbody>
 </table>
-
-<!-- User-Chat Relationships Table -->
-<!--<h2>User-Chat Relationships (--><?php //= count($userChats) ?><!--)</h2>-->
-<!--<table>-->
-<!--    <thead>-->
-<!--    <tr>-->
-<!--        <th>User ID</th>-->
-<!--        <th>Chat ID</th>-->
-<!--        <th>User Name</th>-->
-<!--    </tr>-->
-<!--    </thead>-->
-<!--    <tbody>-->
-<!--    --><?php //foreach ($userChats as $relation): ?>
-<!--        <tr>-->
-<!--            <td>--><?php //= htmlspecialchars($relation['user_id']) ?><!--</td>-->
-<!--            <td>--><?php //= htmlspecialchars($relation['chat_id']) ?><!--</td>-->
-<!--            <td>--><?php //= htmlspecialchars($relation['user_username']) ?? 'N/A' ?><!--</td>-->
-<!--        </tr>-->
-<!--    --><?php //endforeach; ?>
-<!--    </tbody>-->
-<!--</table>-->
 
 </body>
 
