@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $users = DatabaseService::getAllUsers();
 $chats = DatabaseService::getAllChats();
-$inviteCodes = DatabaseService::getAllInviteCodesWithUsernames();
+$inviteCodes = DatabaseService::getAllInviteCodesWithLabels();
 $userChats = DatabaseService::getUserChatRelationships()
 ?>
 
