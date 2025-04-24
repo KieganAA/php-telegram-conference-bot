@@ -202,98 +202,55 @@ class DatabaseService
         ]);
     }
 
-    public static function addInviteCode(string $code): bool
+    public static function addInviteCode(string $code, string $link_label): bool
     {
-        $sql = "INSERT INTO tracker_invite_codes (code) VALUES (:code)";
+        $sql = "INSERT INTO tracker_invite_codes (code, link_label) VALUES (:code, :link_label)";
         $pdo = self::getInstance();
         $stmt = $pdo->prepare($sql);
-        return $stmt->execute([':code' => $code]);
+        return $stmt->execute([':code' => $code, ':link_label' => $link_label]);
     }
 
-    public static function markCodeAsUsed(string $code, int $userId, int $chatId): bool
+    public static function getInviteCodeByLabel(string $link_label): ?string
     {
-        $sql = "UPDATE tracker_invite_codes 
-                SET used = TRUE, user_id = :user_id, chat_id = :chat_id, used_at = NOW() 
-                WHERE code = :code AND used = FALSE";
+        $sql = "SELECT code FROM tracker_invite_codes WHERE link_label = :link_label LIMIT 1";
         $pdo = self::getInstance();
         $stmt = $pdo->prepare($sql);
-        return $stmt->execute([
-            ':code' => $code,
-            ':user_id' => $userId,
-            ':chat_id' => $chatId
-        ]);
-    }
-
-    public static function getUnusedInviteCode(): ?string
-    {
-        $sql = "SELECT code FROM tracker_invite_codes WHERE used = FALSE LIMIT 1";
-        $pdo = self::getInstance();
-        $stmt = $pdo->query($sql);
+        $stmt->execute([':link_label' => $link_label]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result['code'] ?? null;
     }
 
-    public static function isCodeValid(string $code): bool
+    public static function getAllInviteCodesWithLabels(): array
     {
-        $sql = "SELECT COUNT(*) FROM tracker_invite_codes 
-                WHERE code = :code AND used = FALSE";
-        $pdo = self::getInstance();
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([':code' => $code]);
-        return (bool)$stmt->fetchColumn();
-    }
-    public static function getAllInviteCodesWithUsernames(): array
-    {
-        $sql = "SELECT tic.*, u.username AS user_username, c.username AS chat_username
-            FROM tracker_invite_codes tic
-            LEFT JOIN `user` u ON tic.user_id = u.id
-            LEFT JOIN chat c ON tic.chat_id = c.id
-            ORDER BY tic.created_at DESC";
+        $sql = "SELECT code, link_label, created_at FROM tracker_invite_codes ORDER BY created_at DESC";
         $pdo = self::getInstance();
         $stmt = $pdo->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public static function getCodesByUser(int $userId): array
+    public static function isCodeValidForUser(string $code, string $link_label): bool
     {
-        $sql = "SELECT * FROM tracker_invite_codes 
-                WHERE user_id = :user_id";
+        $sql = "SELECT COUNT(*) FROM tracker_invite_codes 
+            WHERE code = :code AND link_label = :link_label";
         $pdo = self::getInstance();
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([':user_id' => $userId]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public static function getCodesByChat(int $chatId): array
-    {
-        $sql = "SELECT * FROM tracker_invite_codes 
-                WHERE chat_id = :chat_id";
-        $pdo = self::getInstance();
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([':chat_id' => $chatId]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    public static function getAvailableCodeCount(): int
-    {
-        $sql = "SELECT COUNT(*) FROM tracker_invite_codes WHERE used = FALSE";
-        $pdo = self::getInstance();
-        return (int)$pdo->query($sql)->fetchColumn();
-    }
-
-    public static function revokeCode(string $code): bool
-    {
-        $sql = "UPDATE tracker_invite_codes 
-                SET used = FALSE, user_id = NULL, chat_id = NULL 
-                WHERE code = :code";
-        $pdo = self::getInstance();
-        $stmt = $pdo->prepare($sql);
-        return $stmt->execute([':code' => $code]);
+        $stmt->execute([':code' => $code, ':link_label' => $link_label]);
+        return (bool)$stmt->fetchColumn();
     }
     public static function getAllUsers(): array
     {
         $sql = "SELECT * FROM `user` ORDER BY created_at DESC";
         $pdo = self::getInstance();
         return $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function getUserById(int $userId): ?array
+    {
+        $sql = "SELECT * FROM user WHERE id = :user_id";
+        $pdo = self::getInstance();
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([':user_id' => $userId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
     }
 
     public static function getAllChats(): array

@@ -36,44 +36,24 @@ class CallbackqueryCommand extends SystemCommand
         $messageId = $callbackQuery->getMessage()->getMessageId();
 
         if ($callbackData === 'tracker_invite_code') {
-            $existingCodes = DatabaseService::getCodesByUser($userId);
+            // Get user's link_label
+            $user = DatabaseService::getUserById($userId);
+            $link_label = $user['link_label'] ?? 'default';
 
-            if (!empty($existingCodes)) {
-                $trackerInviteCode = $existingCodes[0]['code'];
-                $text = DatabaseService::getMessage('tracker_invite_code_exists')
-                    ?: "Your already existing invite code:";
-            } else {
-                //$trackerInviteCode = DatabaseService::getUnusedInviteCode();
-                $trackerInviteCode = '4149';
+            // Get code for this link_label
+            $trackerInviteCode = DatabaseService::getInviteCodeByLabel($link_label);
 
-                if (!$trackerInviteCode) {
-                    Request::answerCallbackQuery([
-                        'callback_query_id' => $callbackQuery->getId(),
-                        'text' => 'All invite codes have been claimed!',
-                        'show_alert' => true,
-                    ]);
-                    return Request::emptyResponse();
-                }
-
-//                $success = DatabaseService::markCodeAsUsed(
-//                    $trackerInviteCode,
-//                    $userId,
-//                    $chatId
-//                );
-                $success = true;
-
-                if (!$success) {
-                    Request::answerCallbackQuery([
-                        'callback_query_id' => $callbackQuery->getId(),
-                        'text' => 'Error claiming code, please try again',
-                        'show_alert' => true,
-                    ]);
-                    return Request::emptyResponse();
-                }
-
-                $text = DatabaseService::getMessage('tracker_invite_code_success')
-                    ?: "Your exclusive invite code:";
+            if (!$trackerInviteCode) {
+                Request::answerCallbackQuery([
+                    'callback_query_id' => $callbackQuery->getId(),
+                    'text' => 'No invite code available for you currently',
+                    'show_alert' => true,
+                ]);
+                return Request::emptyResponse();
             }
+
+            $text = DatabaseService::getMessage('tracker_invite_code_success')
+                ?: "Your group's invite code:";
 
             $keyboard = new InlineKeyboard([
                 [
