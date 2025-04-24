@@ -3,6 +3,8 @@
 session_start();
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../bootstrap.php';
+$linkLabels = require __DIR__.'/../src/Utils/Labels.php';
+
 
 use App\Services\DatabaseService;
 
@@ -259,6 +261,62 @@ $userChats = DatabaseService::getUserChatRelationships()
                 grid-template-columns: 1fr;
             }
         }
+        table {
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        th, td {
+            padding: 0.75rem 0.5rem;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        th {
+            font-size: 0.8125rem;
+            padding: 0.625rem 0.5rem;
+            letter-spacing: 0.5px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+
+        .code-input {
+            padding: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        button {
+            padding: 0.5rem 1rem;
+            font-size: 0.8125rem;
+        }
+
+        /* Add sticky header for better scrolling */
+        thead {
+            position: sticky;
+            top: 70px;
+            background-color: var(--primary-color);
+            z-index: 100;
+        }
+
+        @media (max-width: 768px) {
+            th, td {
+                padding: 0.5rem 0.375rem;
+                max-width: 150px;
+            }
+
+            th {
+                font-size: 0.75rem;
+            }
+
+            table {
+                font-size: 0.8125rem;
+            }
+        }
+    </style>
     </style>
 </head>
 <body>
@@ -320,8 +378,16 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         <input type="hidden" name="action" value="add_code">
         <input class="code-input" type="text" name="new_code"
                placeholder="Enter code" required>
-        <input class="code-input" type="text" name="link_label"
-               placeholder="Link Label" required>
+
+        <select class="code-input" name="link_label" required>
+            <option value="">Select Link Label</option>
+            <?php foreach ($linkLabels as $label): ?>
+                <option value="<?= htmlspecialchars($label) ?>">
+                    <?= htmlspecialchars($label) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+
         <button type="submit">Add Code</button>
     </form>
 </div>
